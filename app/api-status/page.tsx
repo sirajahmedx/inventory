@@ -112,7 +112,7 @@ export default function ApiStatusPage() {
       const overallHealth = getOverallHealth(endpointStatuses);
 
       const status: SystemStatus = {
-        project: "Stockly Inventory Management",
+        project: "Inventory Management",
         environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
         currentTime: new Date().toLocaleString(),
         uptime: calculateUptime(),
@@ -203,7 +203,7 @@ export default function ApiStatusPage() {
           <div className="space-y-2">
             <h1 className="text-4xl font-bold text-primary">API & Project Status</h1>
             <p className="text-lg text-muted-foreground">
-              Real-time monitoring of Stockly&apos;s API endpoints and system health
+              Real-time monitoring of Inventory&apos;s API endpoints and system health
             </p>
           </div>
           <Button
