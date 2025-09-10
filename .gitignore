@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Dependency directories
+bower_components/
+
+# Coverage reports
+coverage/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Python cache
+__pycache__/
+*.pyc
+
+.env.local
+
+.next
