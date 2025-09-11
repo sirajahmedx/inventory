@@ -57,13 +57,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const checkSession = async () => {
       const sessionId = Cookies.get("session_id");
       // Debug log - only log in development
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         console.log("Session ID from cookies:", sessionId);
       }
       if (sessionId) {
         const session = await getSessionClient();
         // Debug log - only log in development
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === "development") {
           console.log("Session from getSessionClient:", session);
         }
         if (session) {
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             email: session.email,
           });
           // Debug log - only log in development
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             console.log("User from session:", session);
           }
           // Set necessary attributes in local storage
@@ -95,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axiosInstance.post("/auth/login", {
+      const response = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
       Cookies.set("session_id", result.sessionId);
       // Debug log - only log in development
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         console.log("Login successful, session ID set:", result.sessionId);
 
         // Debug log to verify cookie
@@ -132,10 +132,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await axiosInstance.post("/auth/logout");
+      await axiosInstance.post("/api/auth/logout");
       clearAuthData();
       // Debug log - only log in development
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         console.log("Logout successful, session ID removed");
       }
     } catch (error) {

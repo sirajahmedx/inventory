@@ -195,18 +195,23 @@ export default function AddProductDialog({
   return (
     <Dialog open={openProductDialog} onOpenChange={setOpenProductDialog}>
       <DialogTrigger asChild>
-        <Button className="h-10 font-semibold">+Add Product</Button>
+        <Button className="h-10 font-semibold bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-md shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors">
+          +Add Product
+        </Button>
       </DialogTrigger>
       <DialogContent
-        className="p-4 sm:p-7 sm:px-8 poppins max-h-[90vh] overflow-y-auto"
+        className="p-4 sm:p-7 sm:px-8 font-sans max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg"
         aria-describedby="dialog-description"
       >
         <DialogHeader>
-          <DialogTitle className="text-[22px]">
+          <DialogTitle className="text-[22px] text-slate-900 dark:text-slate-100">
             {selectedProduct ? "Update Product" : "Add Product"}
           </DialogTitle>
         </DialogHeader>
-        <DialogDescription id="dialog-description">
+        <DialogDescription
+          id="dialog-description"
+          className="text-slate-500 dark:text-slate-400"
+        >
           Enter the details of the product below.
         </DialogDescription>
         <FormProvider {...methods}>
@@ -217,14 +222,17 @@ export default function AddProductDialog({
               <Quantity />
               <Price />
               <div>
-                <label htmlFor="category" className="block text-sm font-medium">
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+                >
                   Category
                 </label>
                 <select
                   id="category"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="mt-1 h-11 block w-full rounded-md border-gray-300 shadow-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="h-11 block w-full rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
                 >
                   <option value="">Select Category</option>
                   {categories.map((category) => (
@@ -235,14 +243,17 @@ export default function AddProductDialog({
                 </select>
               </div>
               <div>
-                <label htmlFor="supplier" className="block text-sm font-medium">
+                <label
+                  htmlFor="supplier"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+                >
                   Supplier
                 </label>
                 <select
                   id="supplier"
                   value={selectedSupplier}
                   onChange={(e) => setSelectedSupplier(e.target.value)}
-                  className="mt-1 h-11 block w-full rounded-md border-gray-300 shadow-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="h-11 block w-full rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
                 >
                   <option value="">Select Supplier</option>
                   {suppliers.map((supplier) => (
@@ -258,21 +269,21 @@ export default function AddProductDialog({
                 <Button
                   ref={dialogCloseRef}
                   variant="secondary"
-                  className="h-11 w-full sm:w-auto px-11"
+                  className="h-11 w-full sm:w-auto px-11 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                 >
                   Cancel
                 </Button>
               </DialogClose>
               <Button
                 type="submit"
-                className="h-11 w-full sm:w-auto px-11"
-                isLoading={isSubmitting} // Button loading effect
+                className="h-11 w-full sm:w-auto px-11 bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-md shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
+                isLoading={isSubmitting}
               >
                 {isSubmitting
                   ? "Loading..."
                   : selectedProduct
-                    ? "Update Product"
-                    : "Add Product"}
+                  ? "Update Product"
+                  : "Add Product"}
               </Button>
             </DialogFooter>
           </form>

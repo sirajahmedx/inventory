@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { connectToDatabase, User } from "@/models";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../../../utils/auth";
 import Cookies from "cookies";
-
-const prisma = new PrismaClient();
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   const allowedOrigins = [
@@ -48,7 +46,10 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    // Connect to database
+    await connectToDatabase();
+
+    const user = await User.findOne({ email });
 
     if (!user) {
       console.error("User not found for email:", email);
@@ -72,15 +73,10 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    if (!user.id) {
-      console.error("User found but id is missing in DB for email:", email);
-      return res.status(500).json({ error: "User data corrupted: id missing" });
-    }
-
-    const token = generateToken(user.id);
+    const token = generateToken(user._id.toString());
 
     if (!token) {
-      console.error("Failed to generate JWT token for user id:", user.id);
+      console.error("Failed to generate JWT token for user id:", user._id);
       return res
         .status(500)
         .json({ error: "Failed to generate session token" });
@@ -101,7 +97,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
 
     console.log("Login successful, session ID set:", token);
     res.status(200).json({
-      userId: user.id,
+      userId: user._id.toString(),
       userName: user.name,
       userEmail: user.email,
       sessionId: token,

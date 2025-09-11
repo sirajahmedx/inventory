@@ -1,4 +1,3 @@
-
 "use client";
 
 //import React, { useEffect } from "react";
@@ -8,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import Papa from 'papaparse';
+import Papa from "papaparse";
 import { FiFileText, FiGrid } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 import { CategoryDropDown } from "./AppTable/dropdowns/CategoryDropDown";
 import { StatusDropDown } from "./AppTable/dropdowns/StatusDropDown";
 import { SuppliersDropDown } from "./AppTable/dropdowns/SupplierDropDown";
@@ -58,7 +57,8 @@ export default function FiltersAndActions({
   // Filter products based on current filters
   const getFilteredProducts = () => {
     return allProducts.filter((product) => {
-      const searchMatch = !searchTerm ||
+      const searchMatch =
+        !searchTerm ||
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.sku.toLowerCase().includes(searchTerm.toLowerCase());
       const categoryMatch =
@@ -81,30 +81,34 @@ export default function FiltersAndActions({
       if (filteredProducts.length === 0) {
         toast({
           title: "No Data to Export",
-          description: "There are no products to export with the current filters.",
+          description:
+            "There are no products to export with the current filters.",
           variant: "destructive",
         });
         return;
       }
 
-      const csvData = filteredProducts.map(product => ({
-        'Product Name': product.name,
-        'SKU': product.sku,
-        'Price': `$${product.price.toFixed(2)}`,
-        'Quantity': product.quantity,
-        'Status': product.status,
-        'Category': product.category || 'Unknown',
-        'Supplier': product.supplier || 'Unknown',
-        'Created Date': new Date(product.createdAt).toLocaleDateString(),
+      const csvData = filteredProducts.map((product) => ({
+        "Product Name": product.name,
+        SKU: product.sku,
+        Price: `$${product.price.toFixed(2)}`,
+        Quantity: product.quantity,
+        Status: product.status,
+        Category: product.category || "Unknown",
+        Supplier: product.supplier || "Unknown",
+        "Created Date": new Date(product.createdAt).toLocaleDateString(),
       }));
 
       const csv = Papa.unparse(csvData);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `stockly-products-${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `stockly-products-${new Date().toISOString().split("T")[0]}.csv`
+      );
+      link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -129,26 +133,27 @@ export default function FiltersAndActions({
       if (filteredProducts.length === 0) {
         toast({
           title: "No Data to Export",
-          description: "There are no products to export with the current filters.",
+          description:
+            "There are no products to export with the current filters.",
           variant: "destructive",
         });
         return;
       }
 
-      const excelData = filteredProducts.map(product => ({
-        'Product Name': product.name,
-        'SKU': product.sku,
-        'Price': product.price,
-        'Quantity': product.quantity,
-        'Status': product.status,
-        'Category': product.category || 'Unknown',
-        'Supplier': product.supplier || 'Unknown',
-        'Created Date': new Date(product.createdAt).toLocaleDateString(),
+      const excelData = filteredProducts.map((product) => ({
+        "Product Name": product.name,
+        SKU: product.sku,
+        Price: product.price,
+        Quantity: product.quantity,
+        Status: product.status,
+        Category: product.category || "Unknown",
+        Supplier: product.supplier || "Unknown",
+        "Created Date": new Date(product.createdAt).toLocaleDateString(),
       }));
 
       const ws = XLSX.utils.json_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Products');
+      XLSX.utils.book_append_sheet(wb, ws, "Products");
 
       // Auto-size columns
       const colWidths = [
@@ -161,9 +166,12 @@ export default function FiltersAndActions({
         { wch: 15 }, // Supplier
         { wch: 12 }, // Created Date
       ];
-      ws['!cols'] = colWidths;
+      ws["!cols"] = colWidths;
 
-      XLSX.writeFile(wb, `stockly-products-${new Date().toISOString().split('T')[0]}.xlsx`);
+      XLSX.writeFile(
+        wb,
+        `stockly-products-${new Date().toISOString().split("T")[0]}.xlsx`
+      );
 
       toast({
         title: "Excel Export Successful!",
@@ -181,7 +189,7 @@ export default function FiltersAndActions({
   const filteredProducts = getFilteredProducts();
 
   return (
-    <div className="flex flex-col gap-4 mb-6">
+    <div className="flex flex-col gap-6 mb-8 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
       {/* Search Bar */}
       <div className="flex justify-center">
         <div className="relative w-full max-w-xl">
@@ -189,14 +197,14 @@ export default function FiltersAndActions({
             placeholder="Search by Name or SKU..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-10 pr-10 w-full"
+            className="h-11 pr-12 w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150 shadow-sm"
           />
           {searchTerm && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setSearchTerm("")}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-full"
             >
               <IoClose className="h-4 w-4" />
             </Button>
@@ -216,15 +224,15 @@ export default function FiltersAndActions({
 
       {/* Export Section */}
       <div className="flex justify-center">
-        <div className="flex items-center gap-2 bg-muted p-2 rounded-lg">
-          <span className="text-sm font-medium text-muted-foreground">
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Export {filteredProducts.length} products:
           </span>
           <Button
             variant="outline"
             size="sm"
             onClick={exportToCSV}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
           >
             <FiFileText className="h-4 w-4" />
             CSV
@@ -233,7 +241,7 @@ export default function FiltersAndActions({
             variant="outline"
             size="sm"
             onClick={exportToExcel}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
           >
             <FiGrid className="h-4 w-4" />
             Excel
@@ -242,7 +250,7 @@ export default function FiltersAndActions({
       </div>
 
       {/* Large Screen Layout */}
-      <div className="hidden lg:flex justify-between items-center gap-4">
+      <div className="hidden lg:flex justify-between items-center gap-6">
         {/* Add Buttons */}
         <div className="flex gap-4">
           <AddProductDialog allProducts={allProducts} userId={userId} />
@@ -276,7 +284,7 @@ export default function FiltersAndActions({
       </div>
 
       {/* Medium and Small Screen Layout */}
-      <div className="flex flex-col lg:hidden gap-4">
+      <div className="flex flex-col lg:hidden gap-6">
         {/* Add Buttons */}
         <div className="flex flex-col gap-4">
           <AddProductDialog allProducts={allProducts} userId={userId} />
@@ -321,21 +329,35 @@ function FilterArea({
   setSelectedSuppliers: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 poppins">
+    <div className="flex flex-col sm:flex-row gap-3 font-sans">
       {/* Status Filter */}
       {selectedStatuses.length > 0 && (
-        <div className="border-dashed border rounded-sm p-1 flex gap-2 items-center px-2 text-sm">
-          <span className="text-gray-600">Status</span>
-          <Separator orientation="vertical" />
+        <div className="border-dashed border border-slate-300 dark:border-slate-700 rounded-md p-2 flex gap-2 items-center px-3 text-sm bg-slate-50 dark:bg-slate-800 shadow-sm">
+          <span className="text-slate-700 dark:text-slate-300 font-medium">
+            Status
+          </span>
+          <Separator
+            orientation="vertical"
+            className="bg-slate-300 dark:bg-slate-700"
+          />
           <div className="flex gap-2 items-center">
             {selectedStatuses.length < 3 ? (
               selectedStatuses.map((status, index) => (
-                <Badge key={index} variant={"secondary"}>
+                <Badge
+                  key={index}
+                  variant={"secondary"}
+                  className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+                >
                   {status}
                 </Badge>
               ))
             ) : (
-              <Badge variant={"secondary"}>3 Selected</Badge>
+              <Badge
+                variant={"secondary"}
+                className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+              >
+                3 Selected
+              </Badge>
             )}
           </div>
         </div>
@@ -343,18 +365,32 @@ function FilterArea({
 
       {/* Category Filter */}
       {selectedCategories.length > 0 && (
-        <div className="border-dashed border rounded-sm p-1 flex gap-2 items-center px-2 text-sm">
-          <span className="text-gray-600">Category</span>
-          <Separator orientation="vertical" />
+        <div className="border-dashed border border-slate-300 dark:border-slate-700 rounded-md p-2 flex gap-2 items-center px-3 text-sm bg-slate-50 dark:bg-slate-800 shadow-sm">
+          <span className="text-slate-700 dark:text-slate-300 font-medium">
+            Category
+          </span>
+          <Separator
+            orientation="vertical"
+            className="bg-slate-300 dark:bg-slate-700"
+          />
           <div className="flex gap-2 items-center">
             {selectedCategories.length < 3 ? (
               selectedCategories.map((category, index) => (
-                <Badge key={index} variant={"secondary"}>
+                <Badge
+                  key={index}
+                  variant={"secondary"}
+                  className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+                >
                   {category}
                 </Badge>
               ))
             ) : (
-              <Badge variant={"secondary"}>3 Selected</Badge>
+              <Badge
+                variant={"secondary"}
+                className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+              >
+                3 Selected
+              </Badge>
             )}
           </div>
         </div>
@@ -362,18 +398,32 @@ function FilterArea({
 
       {/* Supplier Filter */}
       {selectedSuppliers.length > 0 && (
-        <div className="border-dashed border rounded-sm p-1 flex gap-2 items-center px-2 text-sm">
-          <span className="text-gray-600">Supplier</span>
-          <Separator orientation="vertical" />
+        <div className="border-dashed border border-slate-300 dark:border-slate-700 rounded-md p-2 flex gap-2 items-center px-3 text-sm bg-slate-50 dark:bg-slate-800 shadow-sm">
+          <span className="text-slate-700 dark:text-slate-300 font-medium">
+            Supplier
+          </span>
+          <Separator
+            orientation="vertical"
+            className="bg-slate-300 dark:bg-slate-700"
+          />
           <div className="flex gap-2 items-center">
             {selectedSuppliers.length < 3 ? (
               selectedSuppliers.map((supplier, index) => (
-                <Badge key={index} variant={"secondary"}>
+                <Badge
+                  key={index}
+                  variant={"secondary"}
+                  className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+                >
                   {supplier}
                 </Badge>
               ))
             ) : (
-              <Badge variant={"secondary"}>3 Selected</Badge>
+              <Badge
+                variant={"secondary"}
+                className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold px-2 py-1 rounded-full"
+              >
+                3 Selected
+              </Badge>
             )}
           </div>
         </div>
@@ -383,19 +433,19 @@ function FilterArea({
       {(selectedStatuses.length > 0 ||
         selectedCategories.length > 0 ||
         selectedSuppliers.length > 0) && (
-          <Button
-            onClick={() => {
-              setSelectedStatuses([]);
-              setSelectedCategories([]);
-              setSelectedSuppliers([]);
-            }}
-            variant={"ghost"}
-            className="p-1 px-2"
-          >
-            <span>Reset</span>
-            <IoClose />
-          </Button>
-        )}
+        <Button
+          onClick={() => {
+            setSelectedStatuses([]);
+            setSelectedCategories([]);
+            setSelectedSuppliers([]);
+          }}
+          variant={"ghost"}
+          className="p-2 px-3 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-md font-medium flex items-center gap-1"
+        >
+          <span>Reset</span>
+          <IoClose />
+        </Button>
+      )}
     </div>
   );
 }

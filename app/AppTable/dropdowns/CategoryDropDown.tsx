@@ -59,44 +59,55 @@ export function CategoryDropDown({
   }
 
   return (
-    <div className="flex items-center space-x-4 poppins">
+    <div className="flex items-center gap-4 font-sans">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant={"secondary"} className="h-10">
-            <LuGitPullRequestDraft />
-            Categories
+          <Button
+            variant="secondary"
+            className="h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors gap-2"
+          >
+            <LuGitPullRequestDraft className="mr-1 text-blue-500" />
+            <span className="font-medium">Categories</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0 w-56 poppins" side="bottom" align="end">
-          <Command className="p-1">
-            <CommandInput placeholder="Category" />
+        <PopoverContent
+          className="p-0 w-64 font-sans bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-md"
+          side="bottom"
+          align="end"
+        >
+          <Command className="p-2">
+            <CommandInput
+              placeholder="Search category..."
+              className="mb-2 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-md px-2 py-1"
+            />
             <CommandList>
-              <CommandEmpty className="text-slate-500 text-sm text-center p-5">
+              <CommandEmpty className="text-slate-500 dark:text-slate-400 text-sm text-center p-5">
                 No category found.
               </CommandEmpty>
               <CommandGroup>
                 {userCategories.map((category) => (
-                  <CommandItem className="h-9" key={category.id}>
+                  <CommandItem
+                    className="h-9 flex items-center gap-2 px-2 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors"
+                    key={category.id}
+                  >
                     <Checkbox
-                      checked={selectedCategory.includes(category.id)} // Use category ID
-                      onClick={() => handleCheckboxChange(category.id)} // Pass category ID
-                      className="size-4 rounded-[4px]"
+                      checked={selectedCategory.includes(category.id)}
+                      onClick={() => handleCheckboxChange(category.id)}
+                      className="size-4 rounded-[4px] border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-blue-500 focus:ring-2 focus:ring-blue-400"
                     />
-                    <div
-                      className={`flex items-center gap-1 p-1 rounded-lg px-3 text-[14px]`}
-                    >
+                    <span className="text-[14px] text-slate-700 dark:text-slate-200">
                       {category.name}
-                    </div>
+                    </span>
                   </CommandItem>
                 ))}
               </CommandGroup>
             </CommandList>
-            <div className="flex flex-col gap-2 text-[23px]">
-              <Separator />
+            <div className="flex flex-col gap-2 mt-2">
+              <Separator className="bg-slate-200 dark:bg-slate-800" />
               <Button
                 onClick={clearFilters}
-                variant={"ghost"}
-                className="text-[12px] mb-1"
+                variant="ghost"
+                className="text-[12px] text-slate-700 dark:text-slate-200 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-md mb-1 transition-colors"
               >
                 Clear Filters
               </Button>

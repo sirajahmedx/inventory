@@ -2,10 +2,26 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
-import { FiActivity, FiAlertCircle, FiCheckCircle, FiDatabase, FiPackage, FiRefreshCw, FiServer, FiUsers, FiXCircle } from "react-icons/fi";
+import {
+  FiActivity,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiDatabase,
+  FiPackage,
+  FiRefreshCw,
+  FiServer,
+  FiUsers,
+  FiXCircle,
+} from "react-icons/fi";
 import AuthenticatedLayout from "../components/AuthenticatedLayout";
 
 interface EndpointStatus {
@@ -40,16 +56,18 @@ export default function ApiStatusPage() {
     { name: "Suppliers API", path: "/api/suppliers" },
   ];
 
-  const checkEndpointHealth = async (path: string): Promise<{ status: "OK" | "ERROR" | "TIMEOUT"; responseTime?: number }> => {
+  const checkEndpointHealth = async (
+    path: string
+  ): Promise<{ status: "OK" | "ERROR" | "TIMEOUT"; responseTime?: number }> => {
     const startTime = Date.now();
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
       const response = await fetch(path, {
-        method: 'GET',
+        method: "GET",
         signal: controller.signal,
-        credentials: 'include',
+        credentials: "include",
       });
 
       clearTimeout(timeoutId);
@@ -62,7 +80,7 @@ export default function ApiStatusPage() {
       }
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         return { status: "TIMEOUT", responseTime };
       }
       return { status: "ERROR", responseTime };
@@ -86,8 +104,10 @@ export default function ApiStatusPage() {
     return results;
   };
 
-  const getOverallHealth = (endpoints: EndpointStatus[]): "HEALTHY" | "DEGRADED" | "DOWN" => {
-    const okCount = endpoints.filter(ep => ep.status === "OK").length;
+  const getOverallHealth = (
+    endpoints: EndpointStatus[]
+  ): "HEALTHY" | "DEGRADED" | "DOWN" => {
+    const okCount = endpoints.filter((ep) => ep.status === "OK").length;
     const totalCount = endpoints.length;
 
     if (okCount === totalCount) return "HEALTHY";
@@ -113,7 +133,8 @@ export default function ApiStatusPage() {
 
       const status: SystemStatus = {
         project: "Inventory Management",
-        environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+        environment:
+          process.env.NODE_ENV === "production" ? "production" : "development",
         currentTime: new Date().toLocaleString(),
         uptime: calculateUptime(),
         apiHealth: overallHealth,
@@ -201,9 +222,12 @@ export default function ApiStatusPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-primary">API & Project Status</h1>
+            <h1 className="text-4xl font-bold text-primary">
+              API & Project Status
+            </h1>
             <p className="text-lg text-muted-foreground">
-              Real-time monitoring of Inventory&apos;s API endpoints and system health
+              Real-time monitoring of Inventory&apos;s API endpoints and system
+              health
             </p>
           </div>
           <Button
@@ -211,8 +235,10 @@ export default function ApiStatusPage() {
             disabled={isRefreshing}
             className="flex items-center space-x-2"
           >
-            <FiRefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+            <FiRefreshCw
+              className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+            />
+            <span>{isRefreshing ? "Refreshing..." : "Refresh"}</span>
           </Button>
         </div>
 
@@ -222,37 +248,53 @@ export default function ApiStatusPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Project</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Project
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.project}</div>
+                  <div className="text-2xl font-bold">
+                    {systemStatus.project}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Environment</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Environment
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold capitalize">{systemStatus.environment}</div>
+                  <div className="text-2xl font-bold capitalize">
+                    {systemStatus.environment}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Current Time</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Current Time
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.currentTime}</div>
+                  <div className="text-2xl font-bold">
+                    {systemStatus.currentTime}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Uptime</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Uptime
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.uptime}</div>
+                  <div className="text-2xl font-bold">
+                    {systemStatus.uptime}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -292,12 +334,17 @@ export default function ApiStatusPage() {
               <CardContent>
                 <div className="space-y-4">
                   {systemStatus.endpoints.map((endpoint, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div className="flex items-center gap-3">
                         {getStatusIcon(endpoint.status)}
                         <div>
                           <h4 className="font-semibold">{endpoint.name}</h4>
-                          <p className="text-sm text-muted-foreground">{endpoint.path}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {endpoint.path}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
@@ -330,12 +377,16 @@ export default function ApiStatusPage() {
                     <div className="flex items-center gap-2">
                       {getStatusIcon("OK")}
                       <span>MongoDB Connection</span>
-                      <Badge className="bg-green-100 text-green-800">Connected</Badge>
+                      <Badge className="bg-green-100 text-green-800">
+                        Connected
+                      </Badge>
                     </div>
                     <div className="flex items-center gap-2">
                       {getStatusIcon("OK")}
-                      <span>Prisma Client</span>
-                      <Badge className="bg-green-100 text-green-800">Ready</Badge>
+                      <span>Mongoose ODM</span>
+                      <Badge className="bg-green-100 text-green-800">
+                        Ready
+                      </Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -353,12 +404,16 @@ export default function ApiStatusPage() {
                     <div className="flex items-center gap-2">
                       {getStatusIcon("OK")}
                       <span>JWT Service</span>
-                      <Badge className="bg-green-100 text-green-800">Active</Badge>
+                      <Badge className="bg-green-100 text-green-800">
+                        Active
+                      </Badge>
                     </div>
                     <div className="flex items-center gap-2">
                       {getStatusIcon("OK")}
                       <span>Session Management</span>
-                      <Badge className="bg-green-100 text-green-800">Working</Badge>
+                      <Badge className="bg-green-100 text-green-800">
+                        Working
+                      </Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -377,11 +432,15 @@ export default function ApiStatusPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-semibold mb-2">Deployment</h4>
-                    <p className="text-muted-foreground">{systemStatus.deployment}</p>
+                    <p className="text-muted-foreground">
+                      {systemStatus.deployment}
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Last checked</h4>
-                    <p className="text-muted-foreground">{systemStatus.lastChecked}</p>
+                    <p className="text-muted-foreground">
+                      {systemStatus.lastChecked}
+                    </p>
                   </div>
                 </div>
               </CardContent>

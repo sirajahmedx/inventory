@@ -11,19 +11,16 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({
   children,
-  showHeader = true
+  showHeader = true,
 }) => {
   return (
-    <div className="poppins w-full min-h-screen bg-gray-50 dark:bg-[#121212]">
-      {/* Responsive Card */}
-      <Card className="flex flex-col shadow-none space-y-4 lg:space-y-6 lg:mx-8 lg:my-6 lg:rounded-lg lg:border lg:shadow-md">
+    <div className="font-sans w-full min-h-screen bg-slate-50 dark:bg-slate-900">
+      <Card className="flex flex-col max-w-7xl mx-auto my-0 shadow-lg border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 space-y-4 lg:space-y-6">
         {/* Header Section */}
         {showHeader && <AppHeader />}
 
         {/* Main Content */}
-        <div className="p-0 lg:p-4">
-          {children}
-        </div>
+        <main className="p-0 lg:p-6">{children}</main>
       </Card>
     </div>
   );

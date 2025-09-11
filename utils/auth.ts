@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { PrismaClient, User as PrismaUser } from "@prisma/client";
 import Cookies from "js-cookie"; // Import js-cookie
 import { NextApiRequest, NextApiResponse } from "next";
-
-const prisma = new PrismaClient();
+import { IUser, User } from "@/models";
+import { connectToDatabase } from "@/models";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
-type User = PrismaUser;
+type UserType = IUser;
 
 // Check if we're on the server side
 const isServer = typeof window === 'undefined';
@@ -59,7 +58,7 @@ export const verifyToken = (token: string): { userId: string } | null => {
 export const getSessionServer = async (
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<User | null> => {
+): Promise<UserType | null> => {
   const token = req.cookies["session_id"];
   // Debug log - only log in development
   if (process.env.NODE_ENV === 'development') {
@@ -74,7 +73,8 @@ export const getSessionServer = async (
     return null;
   }
 
-  const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+  await connectToDatabase();
+  const user = await User.findById(decoded.userId);
   // Debug log - only log in development
   if (process.env.NODE_ENV === 'development') {
     console.log("User from session:", user);
@@ -82,7 +82,7 @@ export const getSessionServer = async (
   return user;
 };
 
-export const getSessionClient = async (): Promise<User | null> => {
+export const getSessionClient = async (): Promise<UserType | null> => {
   try {
     const token = Cookies.get("session_id");
     // Debug log - only log in development

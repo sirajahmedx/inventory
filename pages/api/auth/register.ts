@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { connectToDatabase, User } from "@/models";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { MongoClient } from "mongodb";
-
-const prisma = new PrismaClient();
 
 const registerSchema = z.object({
   name: z.string().min(1),
@@ -21,53 +18,45 @@ export default async function handler(
   }
 
   try {
+    // Connect to database
+    await connectToDatabase();
+
     const { name, email, password } = registerSchema.parse(req.body);
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Use MongoDB client directly to bypass Prisma constraints
-    const mongoClient = new MongoClient(process.env.DATABASE_URL!);
-    await mongoClient.connect();
-    
-    const db = mongoClient.db();
-    const userCollection = db.collection('User');
-    
     // Generate a unique username
     const baseUsername = email.split('@')[0];
     let username = baseUsername;
     let counter = 1;
-    
+
     // Check if username exists and generate a unique one
-    while (await userCollection.findOne({ username })) {
+    while (await User.findOne({ username })) {
       username = `${baseUsername}${counter}`;
       counter++;
     }
-    
-    const user = await userCollection.insertOne({
+
+    // Create the user
+    const user = new User({
       name,
       email,
       password: hashedPassword,
       username,
-      createdAt: new Date(),
-    });
-    
-    await mongoClient.close();
-    
-    // Get the created user from Prisma
-    const createdUser = await prisma.user.findUnique({
-      where: { email },
     });
 
-    if (!createdUser) {
-      return res.status(500).json({ error: "Failed to create user" });
-    }
+    const savedUser = await user.save();
 
-    res.status(201).json({ id: createdUser.id, name: createdUser.name, email: createdUser.email });
+    res.status(201).json({
+      id: savedUser._id.toString(),
+      name: savedUser.name,
+      email: savedUser.email
+    });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });

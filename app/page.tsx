@@ -49,7 +49,7 @@ const Page: React.FC<PageProps> = ({ params, searchParams }) => {
         setResolvedParams(resolvedParamsData);
         setResolvedSearchParams(resolvedSearchParamsData);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === "development") {
           console.error("Error resolving params:", error);
         }
         setResolvedParams({});
@@ -65,13 +65,19 @@ const Page: React.FC<PageProps> = ({ params, searchParams }) => {
   }, [resolvedParams, resolvedSearchParams]);
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8 bg-white dark:bg-slate-900 rounded-xl shadow-md flex items-center justify-center min-h-[60vh]">
+        <Loading />
+      </div>
+    );
   }
 
   return (
-    <Suspense fallback={<Loading />}>
-      <PageContent />
-    </Suspense>
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8 bg-white dark:bg-slate-900 rounded-xl shadow-md min-h-[60vh]">
+      <Suspense fallback={<Loading />}>
+        <PageContent />
+      </Suspense>
+    </div>
   );
 };
 

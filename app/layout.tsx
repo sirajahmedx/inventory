@@ -1,6 +1,5 @@
 import GlobalLoading from "@/components/GlobalLoading";
 import { Toaster } from "@/components/ui/toaster";
-import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import React, { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
@@ -20,10 +19,10 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const poppins = Poppins({
-  subsets: ["latin"],
+const poppins = localFont({
+  src: "./fonts/GeistVF.woff",
   variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: "100 900",
 });
 
 export const metadata = {
@@ -38,7 +37,7 @@ export const metadata = {
     "Inventory Management",
     "Next.js",
     "React",
-    "Prisma",
+    "Mongoose",
     "MongoDB",
     "Product Listing",
     "Authentication",
@@ -76,7 +75,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-white dark:bg-slate-900 min-h-screen w-full`}
+        style={{ minHeight: "100vh", width: "100%" }}
       >
         <AuthProvider>
           <ThemeProvider
@@ -85,10 +85,12 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Suspense fallback={<div>Loading...</div>}>
-              <GlobalLoading />
-            </Suspense>
-            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 flex flex-col min-h-screen">
+              <Suspense fallback={<div>Loading...</div>}>
+                <GlobalLoading />
+              </Suspense>
+              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            </div>
           </ThemeProvider>
           <Toaster />
           <ToastContainer />

@@ -1,101 +1,139 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { connectToDatabase, Category } from "@/models";
 import { getSessionServer } from "@/utils/auth";
-
-const prisma = new PrismaClient();
+import mongoose from "mongoose";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSessionServer(req, res);
-  if (!session) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  try {
+    // Connect to database
+    await connectToDatabase();
 
-  const { method } = req;
-  const userId = session.id; // Use session.id to get the user ID
+    const session = await getSessionServer(req, res);
+    if (!session) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-  switch (method) {
-    case "POST":
-      try {
-        const { name } = req.body;
-        const category = await prisma.category.create({
-          data: {
-            name,
-            userId,
-          },
-        });
-        res.status(201).json(category);
-      } catch (error) {
-        console.error("Error creating category:", error);
-        res.status(500).json({ error: "Failed to create category" });
-      }
-      break;
-    case "GET":
-      try {
-        const categories = await prisma.category.findMany({
-          where: { userId },
-        });
-        res.status(200).json(categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        res.status(500).json({ error: "Failed to fetch categories" });
-      }
-      break;
-    case "PUT":
-      try {
-        const { id, name } = req.body;
+    const { method } = req;
+    const userId = session.id;
 
-        if (!id || !name) {
-          return res.status(400).json({ error: "ID and name are required" });
+    switch (method) {
+      case "POST":
+        try {
+          const { name } = req.body;
+
+          if (!name || !name.trim()) {
+            return res.status(400).json({ error: "Category name is required" });
+          }
+
+          const category = new Category({
+            name: name.trim(),
+            userId: new mongoose.Types.ObjectId(userId),
+          });
+
+          const savedCategory = await category.save();
+
+          res.status(201).json({
+            id: savedCategory._id.toString(),
+            name: savedCategory.name,
+            userId: savedCategory.userId.toString(),
+            createdAt: savedCategory.createdAt.toISOString(),
+          });
+        } catch (error) {
+          console.error("Error creating category:", error);
+          res.status(500).json({ error: "Failed to create category" });
         }
+        break;
 
-        const updatedCategory = await prisma.category.update({
-          where: { id },
-          data: { name },
-        });
+      case "GET":
+        try {
+          const categories = await Category.find({
+            userId: new mongoose.Types.ObjectId(userId)
+          }).sort({ createdAt: -1 });
 
-        res.status(200).json(updatedCategory);
-      } catch (error) {
-        console.error("Error updating category:", error);
-        res.status(500).json({ error: "Failed to update category" });
-      }
-      break;
-    case "DELETE":
-      try {
-        const { id } = req.body;
-        console.log("Deleting category with ID:", id); // Debug statement
+          const transformedCategories = categories.map((category) => ({
+            id: category._id.toString(),
+            name: category.name,
+            userId: category.userId.toString(),
+            createdAt: category.createdAt.toISOString(),
+          }));
 
-        // Check if the category exists
-        const category = await prisma.category.findUnique({
-          where: { id },
-        });
-
-        if (!category) {
-          return res.status(404).json({ error: "Category not found" });
+          res.status(200).json(transformedCategories);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          res.status(500).json({ error: "Failed to fetch categories" });
         }
+        break;
 
-        const deleteResponse = await prisma.category.delete({
-          where: { id },
-        });
+      case "PUT":
+        try {
+          const { id, name } = req.body;
 
-        console.log("Delete response:", deleteResponse); // Debug statement
+          if (!id || !name || !name.trim()) {
+            return res.status(400).json({ error: "ID and name are required" });
+          }
 
-        res.status(204).end();
-      } catch (error) {
-        console.error("Error deleting category:", error);
-        res.status(500).json({ error: "Failed to delete category" });
-      }
-      break;
-    default:
-      res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+          const updatedCategory = await Category.findByIdAndUpdate(
+            id,
+            { name: name.trim() },
+            { new: true, runValidators: true }
+          );
+
+          if (!updatedCategory) {
+            return res.status(404).json({ error: "Category not found" });
+          }
+
+          res.status(200).json({
+            id: updatedCategory._id.toString(),
+            name: updatedCategory.name,
+            userId: updatedCategory.userId.toString(),
+            createdAt: updatedCategory.createdAt.toISOString(),
+          });
+        } catch (error) {
+          console.error("Error updating category:", error);
+          res.status(500).json({ error: "Failed to update category" });
+        }
+        break;
+
+      case "DELETE":
+        try {
+          const { id } = req.body;
+
+          if (!id) {
+            return res.status(400).json({ error: "Category ID is required" });
+          }
+
+          // Check if the category exists
+          const category = await Category.findById(id);
+          if (!category) {
+            return res.status(404).json({ error: "Category not found" });
+          }
+
+          await Category.findByIdAndDelete(id);
+          res.status(204).end();
+        } catch (error) {
+          console.error("Error deleting category:", error);
+          res.status(500).json({ error: "Failed to delete category" });
+        }
+        break;
+
+      default:
+        res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
+        res.status(405).end(`Method ${method} Not Allowed`);
+    }
+  } catch (error) {
+    console.error("Top-level API error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export const config = {
   api: {
-    externalResolver: true,
+    bodyParser: {
+      sizeLimit: '1mb',
+    },
   },
+  runtime: 'nodejs', // Explicitly set runtime
 };

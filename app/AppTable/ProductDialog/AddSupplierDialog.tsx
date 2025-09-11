@@ -54,7 +54,7 @@ export default function AddSupplierDialog() {
 
     setIsSubmitting(true); // Start loading
     try {
-      const response = await axiosInstance.post("/suppliers", {
+      const response = await axiosInstance.post("/api/suppliers", {
         name: supplierName,
         userId: user?.id,
       });
@@ -94,7 +94,7 @@ export default function AddSupplierDialog() {
 
     setIsEditing(true); // Start loading
     try {
-      const response = await axiosInstance.put("/suppliers", {
+      const response = await axiosInstance.put("/api/suppliers", {
         id: supplierId,
         name: newSupplierName,
       });
@@ -127,11 +127,11 @@ export default function AddSupplierDialog() {
     setIsDeleting(true); // Start loading
 
     // Find the supplier name before deleting for the toast message
-    const supplierToDelete = suppliers.find(sup => sup.id === supplierId);
+    const supplierToDelete = suppliers.find((sup) => sup.id === supplierId);
     const supplierName = supplierToDelete?.name || "Unknown Supplier";
 
     try {
-      const response = await axiosInstance.delete("/suppliers", {
+      const response = await axiosInstance.delete("/api/suppliers", {
         data: { id: supplierId },
       });
 
@@ -163,48 +163,57 @@ export default function AddSupplierDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-10 font-semibold">+Add Supplier</Button>
+        <Button className="h-10 font-semibold bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-md shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors">
+          +Add Supplier
+        </Button>
       </DialogTrigger>
       <DialogContent
-        className="p-4 sm:p-7 sm:px-8 poppins max-h-[90vh] overflow-y-auto"
+        className="p-4 sm:p-7 sm:px-8 font-sans max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg"
         aria-describedby="supplier-dialog-description"
       >
         <DialogHeader>
-          <DialogTitle className="text-[22px]">Add Supplier</DialogTitle>
+          <DialogTitle className="text-[22px] text-slate-900 dark:text-slate-100">
+            Add Supplier
+          </DialogTitle>
         </DialogHeader>
-        <DialogDescription id="supplier-dialog-description">
+        <DialogDescription
+          id="supplier-dialog-description"
+          className="text-slate-500 dark:text-slate-400"
+        >
           Enter the name of the new supplier
         </DialogDescription>
         <Input
           value={supplierName}
           onChange={(e) => setSupplierName(e.target.value)}
           placeholder="New Supplier"
-          className="mt-4"
+          className="mt-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-md"
         />
         <DialogFooter className="mt-9 mb-4 flex flex-col sm:flex-row items-center gap-4">
           <DialogClose asChild>
             <Button
-              variant={"secondary"}
-              className="h-11 w-full sm:w-auto px-11"
+              variant="secondary"
+              className="h-11 w-full sm:w-auto px-11 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
             >
               Cancel
             </Button>
           </DialogClose>
           <Button
             onClick={handleAddSupplier}
-            className="h-11 w-full sm:w-auto px-11"
-            disabled={isSubmitting} // Button loading effect
+            className="h-11 w-full sm:w-auto px-11 bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-md shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Creating..." : "Add Supplier"}
           </Button>
         </DialogFooter>
         <div className="mt-4">
-          <h3 className="text-lg font-semibold">Suppliers</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            Suppliers
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {suppliers.map((supplier) => (
               <div
                 key={supplier.id}
-                className="p-4 border rounded-lg shadow-sm flex flex-col justify-between"
+                className="p-4 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm flex flex-col justify-between bg-slate-50 dark:bg-slate-950/20"
               >
                 {editingSupplier === supplier.id ? (
                   <div className="flex flex-col space-y-2">
@@ -212,19 +221,19 @@ export default function AddSupplierDialog() {
                       value={newSupplierName}
                       onChange={(e) => setNewSupplierName(e.target.value)}
                       placeholder="Edit Supplier"
-                      className="h-8"
+                      className="h-8 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-md"
                     />
                     <div className="flex justify-between gap-2">
                       <Button
                         onClick={() => handleEditSupplier(supplier.id)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-md shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
                         disabled={isEditing}
                       >
                         {isEditing ? "Saving..." : "Save"}
                       </Button>
                       <Button
                         onClick={() => setEditingSupplier(null)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                       >
                         Cancel
                       </Button>
@@ -232,20 +241,22 @@ export default function AddSupplierDialog() {
                   </div>
                 ) : (
                   <div className="flex flex-col space-y-2">
-                    <span className="font-medium">{supplier.name}</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-100">
+                      {supplier.name}
+                    </span>
                     <div className="flex justify-between gap-2">
                       <Button
                         onClick={() => {
                           setEditingSupplier(supplier.id);
                           setNewSupplierName(supplier.name);
                         }}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                       >
                         <FaEdit />
                       </Button>
                       <Button
                         onClick={() => handleDeleteSupplier(supplier.id)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-md shadow-sm hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
                         disabled={isDeleting}
                       >
                         {isDeleting ? "Deleting..." : <FaTrash />}

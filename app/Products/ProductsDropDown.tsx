@@ -128,7 +128,11 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0 flex items-center justify-center rounded-full transition-colors duration-150
+            text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700"
+        >
           <span className="sr-only">Open menu</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -144,17 +148,27 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
           </svg>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="min-w-[140px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg rounded-lg p-1"
+      >
         <DropdownMenuItem
           onClick={handleCopyProduct}
           disabled={isCopying}
+          className="flex items-center gap-2 px-3 py-2 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-md cursor-pointer transition-colors duration-150"
         >
           {isCopying ? "Copying..." : "Copy"}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEditProduct}>Edit</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={handleEditProduct}
+          className="flex items-center gap-2 px-3 py-2 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-md cursor-pointer transition-colors duration-150"
+        >
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={handleDeleteProduct}
           disabled={isDeleting}
+          className="flex items-center gap-2 px-3 py-2 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900 rounded-md cursor-pointer transition-colors duration-150"
         >
           {isDeleting ? "Deleting..." : "Delete"}
         </DropdownMenuItem>

@@ -51,7 +51,8 @@ export function DeleteDialog() {
         // Show error toast
         toast({
           title: "Delete Failed",
-          description: "An unexpected error occurred while deleting the product.",
+          description:
+            "An unexpected error occurred while deleting the product.",
           variant: "destructive",
         });
       } finally {
@@ -67,12 +68,12 @@ export function DeleteDialog() {
         setOpenDialog(open);
       }}
     >
-      <AlertDialogContent className="p-4 sm:p-8">
+      <AlertDialogContent className="p-4 sm:p-8 max-w-7xl w-full rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg sm:text-xl">
+          <AlertDialogTitle className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">
             Are you absolutely sure?
           </AlertDialogTitle>
-          <AlertDialogDescription className="mt-2 text-sm sm:text-base">
+          <AlertDialogDescription className="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400">
             This action cannot be undone. This will permanently delete the
             product.
           </AlertDialogDescription>
@@ -82,14 +83,14 @@ export function DeleteDialog() {
             onClick={() => {
               setSelectedProduct(null);
             }}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700"
           >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={() => deleteProductFx()}
             disabled={isDeleting}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto rounded-md bg-red-600 text-white font-medium hover:bg-red-700 border border-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-700 transition-colors duration-150"
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>

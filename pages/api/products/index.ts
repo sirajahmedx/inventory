@@ -1,193 +1,205 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { connectToDatabase, Product, Category, Supplier } from "@/models";
 import { getSessionServer } from "@/utils/auth";
-import { MongoClient } from "mongodb";
-
-const prisma = new PrismaClient();
+import mongoose from "mongoose";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSessionServer(req, res);
-  if (!session) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  try {
+    // Connect to database
+    await connectToDatabase();
 
-  const { method } = req;
-  const userId = session.id;
+    const session = await getSessionServer(req, res);
+    if (!session) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-  switch (method) {
-    case "POST":
-      try {
-        const { name, sku, price, quantity, status, categoryId, supplierId } =
-          req.body;
+    const { method } = req;
+    const userId = session.id;
 
-        // Check if SKU already exists
-        const existingProduct = await prisma.product.findUnique({
-          where: { sku },
-        });
+    switch (method) {
+      case "POST":
+        try {
+          const { name, sku, price, quantity, status, categoryId, supplierId } = req.body;
 
-        if (existingProduct) {
-          return res.status(400).json({ error: "SKU must be unique" });
-        }
+          // Validate required fields
+          if (!name || !sku || !price || !quantity || !categoryId || !supplierId) {
+            return res.status(400).json({ error: "All fields are required" });
+          }
 
-        // Use Prisma for product creation to ensure consistency
-        const product = await prisma.product.create({
-          data: {
+          // Check if SKU already exists
+          const existingProduct = await Product.findOne({ sku: sku.toUpperCase() });
+          if (existingProduct) {
+            return res.status(400).json({ error: "SKU must be unique" });
+          }
+
+          // Create the product
+          const product = new Product({
             name,
             sku,
-            price,
-            quantity: BigInt(quantity) as any,
-            status,
-            userId,
-            categoryId,
-            supplierId,
-            createdAt: new Date(),
-          },
-        });
-        
-        // Fetch category and supplier data for the response
-        const category = await prisma.category.findUnique({
-          where: { id: categoryId },
-        });
-        const supplier = await prisma.supplier.findUnique({
-          where: { id: supplierId },
-        });
-        
-        // Return the created product data with category and supplier names
-        res.status(201).json({
-          id: product.id,
-          name: product.name,
-          sku: product.sku,
-          price: product.price,
-          quantity: Number(product.quantity),
-          status: product.status,
-          userId: product.userId,
-          categoryId: product.categoryId,
-          supplierId: product.supplierId,
-          createdAt: product.createdAt.toISOString(),
-          category: category?.name || "Unknown",
-          supplier: supplier?.name || "Unknown",
-        });
-      } catch (error) {
-        res.status(500).json({ error: "Failed to create product" });
-      }
-      break;
+            price: parseFloat(price),
+            quantity: parseInt(quantity),
+            status: status || 'active',
+            categoryId: new mongoose.Types.ObjectId(categoryId),
+            supplierId: new mongoose.Types.ObjectId(supplierId),
+            userId: new mongoose.Types.ObjectId(userId),
+          });
 
-    case "GET":
-      try {
-        const products = await prisma.product.findMany({
-          where: { userId },
-        });
+          const savedProduct = await product.save();
 
-        // Debug log - only log in development
-        if (process.env.NODE_ENV === 'development') {
-          console.log("Raw products from database:", products);
+          // Populate category and supplier data
+          const populatedProduct = await Product.findById(savedProduct._id)
+            .populate('categoryId', 'name')
+            .populate('supplierId', 'name');
+
+          // Return the created product data with category and supplier names
+          res.status(201).json({
+            id: savedProduct._id.toString(),
+            name: savedProduct.name,
+            sku: savedProduct.sku,
+            price: savedProduct.price,
+            quantity: savedProduct.quantity,
+            status: savedProduct.status,
+            userId: savedProduct.userId.toString(),
+            categoryId: savedProduct.categoryId.toString(),
+            supplierId: savedProduct.supplierId.toString(),
+            createdAt: savedProduct.createdAt.toISOString(),
+            category: populatedProduct?.categoryId?.name || "Unknown",
+            supplier: populatedProduct?.supplierId?.name || "Unknown",
+          });
+        } catch (error) {
+          console.error("Error creating product:", error);
+          res.status(500).json({ error: "Failed to create product" });
         }
+        break;
 
-        // Fetch category and supplier data separately
-        const transformedProducts = await Promise.all(
-          products.map(async (product) => {
-            const category = await prisma.category.findUnique({
-              where: { id: product.categoryId },
-            });
-            const supplier = await prisma.supplier.findUnique({
-              where: { id: product.supplierId },
-            });
+      case "GET":
+        try {
+          // Fetch products with populated category and supplier data
+          const products = await Product.find({ userId: new mongoose.Types.ObjectId(userId) })
+            .populate('categoryId', 'name')
+            .populate('supplierId', 'name')
+            .sort({ createdAt: -1 });
 
-            return {
-              ...product,
-              quantity: Number(product.quantity), // Convert BigInt to Number
-              createdAt: product.createdAt.toISOString(), // Convert `createdAt` to ISO string
-              category: category?.name || "Unknown", // Transform category to string
-              supplier: supplier?.name || "Unknown", // Transform supplier to string
-            };
-          })
-        );
+          // Debug log - only log in development
+          if (process.env.NODE_ENV === 'development') {
+            console.log("Raw products from database:", products.length);
+          }
 
-        res.status(200).json(transformedProducts);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch products" });
-      }
-      break;
+          // Transform the data to match the expected format
+          const transformedProducts = products.map((product) => ({
+            id: product._id.toString(),
+            name: product.name,
+            sku: product.sku,
+            price: product.price,
+            quantity: product.quantity,
+            status: product.status,
+            userId: product.userId.toString(),
+            categoryId: product.categoryId.toString(),
+            supplierId: product.supplierId.toString(),
+            createdAt: product.createdAt.toISOString(),
+            category: product.categoryId?.name || "Unknown",
+            supplier: product.supplierId?.name || "Unknown",
+          }));
 
-    case "PUT":
-      try {
-        const {
-          id,
-          name,
-          sku,
-          price,
-          quantity,
-          status,
-          categoryId,
-          supplierId,
-        } = req.body;
+          res.status(200).json(transformedProducts);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          res.status(500).json({ error: "Failed to fetch products" });
+        }
+        break;
 
-        const updatedProduct = await prisma.product.update({
-          where: { id },
-          data: {
-            name,
-            sku,
-            price,
-            quantity: BigInt(quantity) as any, // Convert to BigInt for database
-            status,
-            categoryId,
-            supplierId,
-          },
-        });
+      case "PUT":
+        try {
+          const { id, name, sku, price, quantity, status, categoryId, supplierId } = req.body;
 
-        // Fetch category and supplier data for the response
-        const category = await prisma.category.findUnique({
-          where: { id: categoryId },
-        });
-        const supplier = await prisma.supplier.findUnique({
-          where: { id: supplierId },
-        });
+          if (!id) {
+            return res.status(400).json({ error: "Product ID is required" });
+          }
 
-        // Return the updated product data with category and supplier names
-        res.status(200).json({
-          id: updatedProduct.id,
-          name: updatedProduct.name,
-          sku: updatedProduct.sku,
-          price: updatedProduct.price,
-          quantity: Number(updatedProduct.quantity), // Convert BigInt to Number
-          status: updatedProduct.status,
-          userId: updatedProduct.userId,
-          categoryId: updatedProduct.categoryId,
-          supplierId: updatedProduct.supplierId,
-          createdAt: updatedProduct.createdAt.toISOString(),
-          category: category?.name || "Unknown",
-          supplier: supplier?.name || "Unknown",
-        });
-      } catch (error) {
-        res.status(500).json({ error: "Failed to update product" });
-      }
-      break;
+          // Update the product
+          const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            {
+              name,
+              sku,
+              price: parseFloat(price),
+              quantity: parseInt(quantity),
+              status,
+              categoryId: new mongoose.Types.ObjectId(categoryId),
+              supplierId: new mongoose.Types.ObjectId(supplierId),
+            },
+            { new: true, runValidators: true }
+          );
 
-    case "DELETE":
-      try {
-        const { id } = req.body;
+          if (!updatedProduct) {
+            return res.status(404).json({ error: "Product not found" });
+          }
 
-        await prisma.product.delete({
-          where: { id },
-        });
+          // Populate category and supplier data
+          const populatedProduct = await Product.findById(updatedProduct._id)
+            .populate('categoryId', 'name')
+            .populate('supplierId', 'name');
 
-        res.status(204).end();
-      } catch (error) {
-        res.status(500).json({ error: "Failed to delete product" });
-      }
-      break;
+          // Return the updated product data with category and supplier names
+          res.status(200).json({
+            id: updatedProduct._id.toString(),
+            name: updatedProduct.name,
+            sku: updatedProduct.sku,
+            price: updatedProduct.price,
+            quantity: updatedProduct.quantity,
+            status: updatedProduct.status,
+            userId: updatedProduct.userId.toString(),
+            categoryId: updatedProduct.categoryId.toString(),
+            supplierId: updatedProduct.supplierId.toString(),
+            createdAt: updatedProduct.createdAt.toISOString(),
+            category: populatedProduct?.categoryId?.name || "Unknown",
+            supplier: populatedProduct?.supplierId?.name || "Unknown",
+          });
+        } catch (error) {
+          console.error("Error updating product:", error);
+          res.status(500).json({ error: "Failed to update product" });
+        }
+        break;
 
-    default:
-      res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+      case "DELETE":
+        try {
+          const { id } = req.body;
+
+          if (!id) {
+            return res.status(400).json({ error: "Product ID is required" });
+          }
+
+          const deletedProduct = await Product.findByIdAndDelete(id);
+
+          if (!deletedProduct) {
+            return res.status(404).json({ error: "Product not found" });
+          }
+
+          res.status(204).end();
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          res.status(500).json({ error: "Failed to delete product" });
+        }
+        break;
+
+      default:
+        res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
+        res.status(405).end(`Method ${method} Not Allowed`);
+    }
+  } catch (error) {
+    console.error("Top-level API error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export const config = {
   api: {
-    externalResolver: true,
+    bodyParser: {
+      sizeLimit: '1mb',
+    },
   },
+  runtime: 'nodejs',
 };

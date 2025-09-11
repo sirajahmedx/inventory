@@ -46,7 +46,7 @@ const AppTable = React.memo(() => {
 
   useEffect(() => {
     // Debug log for products - only log in development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log("All Products in AppTable:", allProducts);
     }
   }, [allProducts]);
@@ -59,18 +59,20 @@ const AppTable = React.memo(() => {
   }
 
   return (
-    <Card className="flex flex-col shadow-none poppins border-none">
+    <Card className="flex flex-col font-sans bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg max-w-7xl mx-auto">
       {/* Centered Header */}
-      <CardHeader className="flex flex-col justify-center items-center space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:space-x-4">
+      <CardHeader className="flex flex-col justify-center items-center space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:space-x-4 bg-slate-50 dark:bg-slate-950/20 rounded-t-lg border-b border-slate-200 dark:border-slate-800">
         <div className="flex flex-col items-center sm:items-start">
-          <CardTitle className="font-bold text-[23px]">Products</CardTitle>
-          <p className="text-sm text-slate-600">
+          <CardTitle className="font-bold text-2xl text-slate-900 dark:text-slate-100">
+            Products
+          </CardTitle>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             {productCount} products
           </p>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-4 sm:p-6">
         {/* Filters and Actions */}
         <FiltersAndActions
           searchTerm={searchTerm}
@@ -88,23 +90,25 @@ const AppTable = React.memo(() => {
         />
 
         {/* Product Table */}
-        <ProductTable
-          data={allProducts || []}
-          columns={columns}
-          userId={user.id}
-          isLoading={isLoading}
-          searchTerm={searchTerm}
-          pagination={pagination}
-          setPagination={setPagination}
-          selectedCategory={selectedCategory}
-          selectedStatuses={selectedStatuses}
-          selectedSuppliers={selectedSuppliers}
-        />
+        <div className="mt-6">
+          <ProductTable
+            data={allProducts || []}
+            columns={columns}
+            userId={user.id}
+            isLoading={isLoading}
+            searchTerm={searchTerm}
+            pagination={pagination}
+            setPagination={setPagination}
+            selectedCategory={selectedCategory}
+            selectedStatuses={selectedStatuses}
+            selectedSuppliers={selectedSuppliers}
+          />
+        </div>
       </CardContent>
     </Card>
   );
 });
 
-AppTable.displayName = 'AppTable';
+AppTable.displayName = "AppTable";
 
 export default AppTable;

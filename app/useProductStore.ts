@@ -63,7 +63,7 @@ export const useProductStore = create<ProductState>((set) => ({
   loadProducts: async () => {
     set({ isLoading: true });
     try {
-      const response = await axiosInstance.get("/products");
+      const response = await axiosInstance.get("/api/products");
       const products = response.data || [];
 
       // Optimize by ensuring we don't set the same data
@@ -92,7 +92,7 @@ export const useProductStore = create<ProductState>((set) => ({
   addProduct: async (product: Product) => {
     set({ isLoading: true });
     try {
-      const response = await axiosInstance.post("/products", product);
+      const response = await axiosInstance.post("/api/products", product);
 
       const newProduct = response.data;
       // Debug log - only log in development
@@ -115,7 +115,7 @@ export const useProductStore = create<ProductState>((set) => ({
   updateProduct: async (updatedProduct: Product) => {
     set({ isLoading: true });
     try {
-      const response = await axiosInstance.put("/products", updatedProduct); // Send the `id` in the request body
+      const response = await axiosInstance.put("/api/products", updatedProduct); // Send the `id` in the request body
 
       const newProduct = response.data;
 
@@ -142,7 +142,7 @@ export const useProductStore = create<ProductState>((set) => ({
   deleteProduct: async (productId: string) => {
     set({ isLoading: true });
     try {
-      const response = await axiosInstance.delete("/products", {
+      const response = await axiosInstance.delete("/api/products", {
         data: { id: productId }, // Send the ID in the request body
       });
 
@@ -167,7 +167,7 @@ export const useProductStore = create<ProductState>((set) => ({
   // Load all categories
   loadCategories: async () => {
     try {
-      const response = await axiosInstance.get("/categories");
+      const response = await axiosInstance.get("/api/categories");
       set({ categories: response.data });
       // Debug log - only log in development
       if (process.env.NODE_ENV === "development") {
@@ -203,7 +203,7 @@ export const useProductStore = create<ProductState>((set) => ({
   // Load all suppliers
   loadSuppliers: async () => {
     try {
-      const response = await axiosInstance.get("/suppliers");
+      const response = await axiosInstance.get("/api/suppliers");
       set({ suppliers: response.data });
       // Debug log - only log in development
       if (process.env.NODE_ENV === "development") {

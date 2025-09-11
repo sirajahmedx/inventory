@@ -52,33 +52,47 @@ export default function AddCategoryDialog() {
       return;
     }
 
-    setIsSubmitting(true); // Start loading
+    // Add this check
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      const response = await axiosInstance.post("/categories", {
+      console.log("=== CLIENT REQUEST DEBUG ===");
+      console.log("Category name:", categoryName);
+      console.log("User ID:", user?.id);
+      console.log("User object:", user);
+
+      const requestData = {
         name: categoryName,
         userId: user?.id,
-      });
+      };
+      console.log("Request data:", requestData);
+      console.log("Request data type:", typeof requestData);
 
-      if (response.status !== 201) {
-        throw new Error("Failed to add category");
-      }
+      const response = await axiosInstance.post("/api/categories", requestData);
+      console.log("Response received:", response);
 
-      const newCategory = response.data;
-      addCategory(newCategory);
-      setCategoryName("");
-      toast({
-        title: "Category Created Successfully!",
-        description: `"${categoryName}" has been added to your categories.`,
-      });
-    } catch (error) {
+      // ... rest of your code
+    } catch (error: any) {
       console.error("Error adding category:", error);
+      // Add more detailed error logging
+      console.error("Error response:", error?.response?.data);
+      console.error("Error status:", error?.response?.status);
+
       toast({
         title: "Creation Failed",
         description: "Failed to create the category. Please try again.",
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 
@@ -94,7 +108,7 @@ export default function AddCategoryDialog() {
 
     setIsEditing(true); // Start loading
     try {
-      const response = await axiosInstance.put("/categories", {
+      const response = await axiosInstance.put("/api/categories", {
         id: categoryId,
         name: newCategoryName,
       });
@@ -127,11 +141,11 @@ export default function AddCategoryDialog() {
     setIsDeleting(true); // Start loading
 
     // Find the category name before deleting for the toast message
-    const categoryToDelete = categories.find(cat => cat.id === categoryId);
+    const categoryToDelete = categories.find((cat) => cat.id === categoryId);
     const categoryName = categoryToDelete?.name || "Unknown Category";
 
     try {
-      const response = await axiosInstance.delete("/categories", {
+      const response = await axiosInstance.delete("/api/categories", {
         data: { id: categoryId },
       });
 
@@ -163,48 +177,57 @@ export default function AddCategoryDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-10 font-semibold">+Add Category</Button>
+        <Button className="h-10 font-semibold bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-lg shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors duration-150">
+          +Add Category
+        </Button>
       </DialogTrigger>
       <DialogContent
-        className="p-4 sm:p-7 sm:px-8 poppins max-h-[90vh] overflow-y-auto"
+        className="p-4 sm:p-8 font-sans max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg w-full max-w-2xl mx-auto"
         aria-describedby="category-dialog-description"
       >
         <DialogHeader>
-          <DialogTitle className="text-[22px]">Add Category</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+            Add Category
+          </DialogTitle>
         </DialogHeader>
-        <DialogDescription id="category-dialog-description">
+        <DialogDescription
+          id="category-dialog-description"
+          className="text-slate-500 dark:text-slate-400 mb-4"
+        >
           Enter the name of the new category
         </DialogDescription>
         <Input
           value={categoryName}
           onChange={(e) => setCategoryName(e.target.value)}
           placeholder="New Category"
-          className="mt-4"
+          className="mt-2 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150 shadow-sm"
         />
-        <DialogFooter className="mt-9 mb-4 flex flex-col sm:flex-row items-center gap-4">
+        <DialogFooter className="mt-8 mb-4 flex flex-col sm:flex-row items-center gap-4">
           <DialogClose asChild>
             <Button
-              variant={"secondary"}
-              className="h-11 w-full sm:w-auto px-11"
+              variant="secondary"
+              className="h-11 w-full sm:w-auto px-11 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors duration-150"
             >
               Cancel
             </Button>
           </DialogClose>
           <Button
             onClick={handleAddCategory}
-            className="h-11 w-full sm:w-auto px-11"
-            disabled={isSubmitting} // Button loading effect
+            className="h-11 w-full sm:w-auto px-11 bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-lg shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors duration-150"
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Creating..." : "Add Category"}
           </Button>
         </DialogFooter>
         <div className="mt-4">
-          <h3 className="text-lg font-semibold">Categories</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+            Categories
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="p-4 border rounded-lg shadow-sm flex flex-col justify-between"
+                className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm flex flex-col justify-between bg-slate-50 dark:bg-slate-950/20"
               >
                 {editingCategory === category.id ? (
                   <div className="flex flex-col space-y-2">
@@ -212,19 +235,19 @@ export default function AddCategoryDialog() {
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
                       placeholder="Edit Category"
-                      className="h-8"
+                      className="h-8 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150 shadow-sm"
                     />
                     <div className="flex justify-between gap-2">
                       <Button
                         onClick={() => handleEditCategory(category.id)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 rounded-lg shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors duration-150"
                         disabled={isEditing}
                       >
                         {isEditing ? "Saving..." : "Save"}
                       </Button>
                       <Button
                         onClick={() => setEditingCategory(null)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors duration-150"
                       >
                         Cancel
                       </Button>
@@ -232,20 +255,22 @@ export default function AddCategoryDialog() {
                   </div>
                 ) : (
                   <div className="flex flex-col space-y-2">
-                    <span className="font-medium">{category.name}</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-100">
+                      {category.name}
+                    </span>
                     <div className="flex justify-between gap-2">
                       <Button
                         onClick={() => {
                           setEditingCategory(category.id);
                           setNewCategoryName(category.name);
                         }}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-md shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors duration-150"
                       >
                         <FaEdit />
                       </Button>
                       <Button
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="h-8 w-full"
+                        className="h-8 w-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-md shadow-sm hover:bg-red-200 dark:hover:bg-red-800 transition-colors duration-150"
                         disabled={isDeleting}
                       >
                         {isDeleting ? "Deleting..." : <FaTrash />}

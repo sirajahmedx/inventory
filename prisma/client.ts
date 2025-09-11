@@ -1,11 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { connectToDatabase } from '../models';
 
-const prisma = new PrismaClient();
+// Connect to database
+connectToDatabase()
+  .then(() => console.log('✅ Database connection established'))
+  .catch((error) => console.error('❌ Database connection error:', error));
 
-// Test database connection
-prisma
-  .$connect()
-  .then(() => console.log("Connected to the database"))
-  .catch((error) => console.error("Database connection error:", error));
-
-export { prisma };
+export { connectToDatabase };

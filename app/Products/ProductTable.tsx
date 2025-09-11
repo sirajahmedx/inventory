@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -99,14 +98,15 @@ export const ProductTable = React.memo(function ProductTable({
 
   const filteredData = useMemo(() => {
     // Debug log - only log in development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log("Search term:", searchTerm);
       console.log("Data length:", data.length);
     }
 
     const filtered = data.filter((product) => {
       // Search term filtering
-      const searchMatch = !searchTerm ||
+      const searchMatch =
+        !searchTerm ||
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.sku.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -126,7 +126,7 @@ export const ProductTable = React.memo(function ProductTable({
     });
 
     // Debug log - only log in development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log("Filtered data length:", filtered.length);
     }
 
@@ -148,25 +148,31 @@ export const ProductTable = React.memo(function ProductTable({
   });
 
   return (
-    <div className="poppins">
+    <div className="font-sans w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
       {/* Show Skeleton while loading */}
       {isLoading ? (
         <Skeleton rows={5} columns={columns.length} />
       ) : (
         <>
-          <div className="rounded-md border shadow-sm">
-            <Table>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 shadow-md bg-white dark:bg-slate-900 overflow-x-auto">
+            <Table className="min-w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow
+                    key={headerGroup.id}
+                    className="bg-slate-50 dark:bg-slate-800"
+                  >
                     {headerGroup.headers.map((header) => (
-                      <TableCell key={header.id}>
+                      <TableCell
+                        key={header.id}
+                        className="px-4 py-3 text-slate-700 dark:text-slate-200 font-semibold text-sm border-b border-slate-200 dark:border-slate-800"
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -178,9 +184,13 @@ export const ProductTable = React.memo(function ProductTable({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
+                      className="hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors duration-150"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell
+                          key={cell.id}
+                          className="px-4 py-2 text-slate-700 dark:text-slate-200 text-sm border-b border-slate-100 dark:border-slate-800"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -191,7 +201,10 @@ export const ProductTable = React.memo(function ProductTable({
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="text-center">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="text-center text-slate-400 dark:text-slate-500 py-8"
+                    >
                       No results.
                     </TableCell>
                   </TableRow>
@@ -209,13 +222,13 @@ export const ProductTable = React.memo(function ProductTable({
           </div>
 
           {/* Pagination Buttons */}
-          <div className="flex justify-center items-center space-x-4 mt-6">
+          <div className="flex flex-wrap justify-center items-center gap-2 mt-6">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
               <BiFirstPage />
             </Button>
@@ -224,11 +237,11 @@ export const ProductTable = React.memo(function ProductTable({
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
               <GrFormPrevious />
             </Button>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-slate-500 dark:text-slate-400 px-2">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
             </span>
             <Button
@@ -236,7 +249,7 @@ export const ProductTable = React.memo(function ProductTable({
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
               <GrFormNext />
             </Button>
@@ -245,7 +258,7 @@ export const ProductTable = React.memo(function ProductTable({
               size="sm"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
               <BiLastPage />
             </Button>
