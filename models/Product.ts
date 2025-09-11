@@ -76,12 +76,6 @@ ProductSchema.index({ status: 1 });
 ProductSchema.index({ userId: 1, categoryId: 1 });
 ProductSchema.index({ userId: 1, supplierId: 1 });
 
-// Pre-save middleware to ensure SKU is uppercase
-ProductSchema.pre('save', function(next) {
-  if (this.sku ) {
-    this.sku = this?.sku.toUpperCase();
-  }
-  next();
-});
+  
 
 export default mongoose?.models?.Product || mongoose?.model<IProduct>('Product', ProductSchema);
