@@ -1,39 +1,50 @@
-# 📦 Stocky - Modern Inventory Management System
+# Inventory Pro - Modern Inventory Management System
 
-**A comprehensive, full-stack inventory management solution built with Next.js, Mongoose, and modern web technologies for efficient product tracking and business operations.**
+A comprehensive, full-stack inventory management solution built with Next.js, Mongoose, and modern web technologies for efficient product tracking and business operations.
 
-## ✨ Features
+## Key Features
 
-### 🔐 **Authentication & Security**
+### Core Functionality
 
-- Secure user authentication with JWT tokens
-- Session-based login/logout system
-- Protected routes and API endpoints
+- **Complete Product Management**: Full CRUD operations with advanced filtering and search
+- **Real-time Analytics Dashboard**: Comprehensive statistics and reporting with interactive charts
+- **Multi-format Export**: CSV and Excel export capabilities with applied filters
+- **Smart Inventory Tracking**: Automatic status calculation (Available, Stock Low, Stock Out)
+- **QR Code Integration**: Instant QR code generation for product identification
 
-### 📊 **Product Management**
+### Organization & Data Management
 
-- Complete CRUD operations for products
-- Advanced filtering by category, supplier, and status
-- Real-time search functionality
-- Bulk export to CSV and Excel formats
-- QR code generation for each product
+- **Category Management**: Organize products by customizable categories
+- **Supplier Tracking**: Complete vendor management with contact information
+- **Advanced Filtering**: Filter by category, supplier, status, and custom search terms
+- **User-specific Data**: Isolated data per user with secure access controls
 
-### 🏷️ **Organization**
+### User Experience
 
-- Category management system
-- Supplier/vendor tracking
-- Status-based inventory monitoring (Available, Stock Low, Stock Out)
-- User-specific data isolation
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Dark/Light Mode**: Seamless theme switching with persistent preferences
+- **Modern UI Components**: Clean, professional interface with consistent design system
+- **Real-time Updates**: Live data synchronization and instant feedback
 
-### 🎨 **Modern UI/UX**
+### Technical Features
 
-- Responsive design for all devices
-- Dark/Light mode toggle
-- Beautiful gradient headers and modern styling
-- Intuitive navigation and user experience
-- Real-time data updates
+- **Secure Authentication**: JWT-based login system with session management
+- **API Documentation**: Interactive API reference with testing capabilities
+- **System Monitoring**: Real-time API health status and performance metrics
+- **Database Seeding**: Automated sample data generation for testing and demos
 
-### 🔧 **Technical Stack**
+## Demo Credentials
+
+> **Use these credentials to explore the application:**
+
+```
+📧 Email:    user@email.com
+🔑 Password: user@123
+```
+
+**Quick Access:** Visit [http://localhost:3000](http://localhost:3000) and use the credentials above to login.
+
+## Technology Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Mongoose ODM
@@ -41,13 +52,179 @@
 - **UI Components**: Radix UI, Lucide Icons
 - **State Management**: Zustand for client state
 - **Authentication**: Custom JWT implementation
+- **Charts & Analytics**: Recharts for data visualization
+- **Export Libraries**: PapaParse (CSV), XLSX (Excel)
 
-## 🚀 Getting Started
+## Quick Start
 
 ### Prerequisites
 
 - Node.js 18+ and npm
-- MongoDB database (local or cloud)
+- MongoDB database (local or cloud instance)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/sirajahmedx/inventory.git
+   cd inventory
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory:
+
+   ```env
+   DATABASE_URL=mongodb://localhost:27017/inventory
+   JWT_SECRET=your_super_secret_jwt_key_here
+   NEXTAUTH_SECRET=your_nextauth_secret_here
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+
+4. **Database Setup**
+
+   ```bash
+   # Ensure MongoDB is running
+   mongod
+   ```
+
+5. **Seed Database (Optional)**
+   Populate with sample data:
+
+   ```bash
+   npm run seed
+   ```
+
+   This creates 10 categories, 5 suppliers, and 100+ products.
+
+6. **Start Development Server**
+
+   ```bash
+   npm run dev
+   ```
+
+7. **Access Application**
+   Open [http://localhost:3000](http://localhost:3000) and login with demo credentials.
+
+## Application Structure
+
+```
+inventory/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   ├── auth/         # Authentication endpoints
+│   │   ├── products/     # Product CRUD operations
+│   │   ├── categories/   # Category management
+│   │   └── suppliers/    # Supplier management
+│   ├── analytics/        # Analytics dashboard
+│   ├── api-docs/         # API documentation
+│   ├── api-status/       # System monitoring
+│   └── components/       # Reusable UI components
+├── models/               # Mongoose schemas
+├── lib/                  # Utility functions
+└── public/              # Static assets
+```
+
+## Available Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+npm run seed     # Populate database with sample data
+```
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/session` - Session validation
+
+### Products
+
+- `GET /api/products` - List products with filtering
+- `POST /api/products` - Create new product
+- `PUT /api/products/[id]` - Update product
+- `DELETE /api/products/[id]` - Delete product
+
+### Categories
+
+- `GET /api/categories` - List categories
+- `POST /api/categories` - Create category
+- `PUT /api/categories/[id]` - Update category
+- `DELETE /api/categories/[id]` - Delete category
+
+### Suppliers
+
+- `GET /api/suppliers` - List suppliers
+- `POST /api/suppliers` - Create supplier
+- `PUT /api/suppliers/[id]` - Update supplier
+- `DELETE /api/suppliers/[id]` - Delete supplier
+
+## Key Highlights
+
+### Analytics Dashboard
+
+- Interactive charts and graphs
+- Real-time inventory statistics
+- Forecasting and trend analysis
+- Category-wise distribution
+- Supplier performance metrics
+
+### Export Capabilities
+
+- CSV export with custom formatting
+- Excel export with multiple sheets
+- Filtered data export
+- Bulk operations support
+
+### Advanced Filtering
+
+- Multi-select category filtering
+- Status-based filtering
+- Supplier-based filtering
+- Real-time search across all fields
+- Combined filter application
+
+### Security Features
+
+- JWT token-based authentication
+- Secure API endpoints
+- User session management
+- Data isolation per user
+- Input validation and sanitization
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Siraj Ahmed**
+
+- GitHub: [@sirajahmedx](https://github.com/sirajahmedx)
+
+---
+
+Built with modern web technologies for scalable inventory management solutions.
 
 ### Installation
 
@@ -103,7 +280,7 @@
 7. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project Structure
+## Application Structure
 
 ```
 inventory/
@@ -113,53 +290,89 @@ inventory/
 │   │   ├── products/     # Product CRUD operations
 │   │   ├── categories/   # Category management
 │   │   └── suppliers/    # Supplier management
-│   ├── components/       # Reusable UI components
-│   ├── globals.css       # Global styles
-│   └── page.tsx          # Main dashboard
+│   ├── analytics/        # Analytics dashboard
+│   ├── api-docs/         # API documentation
+│   ├── api-status/       # System monitoring
+│   └── components/       # Reusable UI components
 ├── models/               # Mongoose schemas
-│   ├── User.ts          # User model
-│   ├── Product.ts       # Product model
-│   ├── Category.ts      # Category model
-│   └── Supplier.ts      # Supplier model
-├── lib/                 # Utility functions
+├── lib/                  # Utility functions
 └── public/              # Static assets
 ```
 
-## 🎯 Key Components
-
-### Dashboard Features
-
-- **Statistics Cards**: Total products, available stock, low stock alerts
-- **Advanced Table**: Sortable, filterable product listing
-- **Quick Actions**: Add products, categories, and suppliers
-- **Export Tools**: CSV and Excel export with filters applied
-
-### Product Management
-
-- **Smart Status Tracking**: Automatic status calculation based on quantity
-- **Comprehensive Details**: SKU, price, quantity, category, supplier
-- **Visual Indicators**: Color-coded status badges and alerts
-- **QR Integration**: Instant QR code generation for products
-
-## 🔧 Available Scripts
+## Available Scripts
 
 ```bash
 npm run dev      # Start development server
 npm run build    # Build for production
 npm run start    # Start production server
 npm run lint     # Run ESLint
+npm run seed     # Populate database with sample data
 ```
 
-## 🌟 Highlights
+## API Endpoints
 
-- **⚡ Performance**: Optimized with React.memo, useMemo, and efficient data fetching
-- **🎨 Design**: Modern UI with consistent design system and smooth animations
-- **📱 Responsive**: Mobile-first approach with adaptive layouts
-- **🔒 Security**: JWT-based authentication with secure API endpoints
-- **📊 Analytics**: Built-in statistics and reporting capabilities
-- **🔄 Real-time**: Live updates and instant feedback
+### Authentication
 
-## 🤝 Contributing
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/session` - Session validation
+
+### Products
+
+- `GET /api/products` - List products with filtering
+- `POST /api/products` - Create new product
+- `PUT /api/products/[id]` - Update product
+- `DELETE /api/products/[id]` - Delete product
+
+### Categories
+
+- `GET /api/categories` - List categories
+- `POST /api/categories` - Create category
+- `PUT /api/categories/[id]` - Update category
+- `DELETE /api/categories/[id]` - Delete category
+
+### Suppliers
+
+- `GET /api/suppliers` - List suppliers
+- `POST /api/suppliers` - Create supplier
+- `PUT /api/suppliers/[id]` - Update supplier
+- `DELETE /api/suppliers/[id]` - Delete supplier
+
+## Key Highlights
+
+### Analytics Dashboard
+
+- Interactive charts and graphs
+- Real-time inventory statistics
+- Forecasting and trend analysis
+- Category-wise distribution
+- Supplier performance metrics
+
+### Export Capabilities
+
+- CSV export with custom formatting
+- Excel export with multiple sheets
+- Filtered data export
+- Bulk operations support
+
+### Advanced Filtering
+
+- Multi-select category filtering
+- Status-based filtering
+- Supplier-based filtering
+- Real-time search across all fields
+- Combined filter application
+
+### Security Features
+
+- JWT token-based authentication
+- Secure API endpoints
+- User session management
+- Data isolation per user
+- Input validation and sanitization
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -167,17 +380,16 @@ npm run lint     # Run ESLint
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## Author
 
 **Siraj Ahmed**
 
 - GitHub: [@sirajahmedx](https://github.com/sirajahmedx)
-- LinkedIn: [Your LinkedIn Profile]
 
 ---
 
-**Built with ❤️ using Next.js, Mongoose, and modern web technologies**
+Built with modern web technologies for scalable inventory management solutions.
