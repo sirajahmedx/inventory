@@ -22,6 +22,7 @@ import { Product } from "@/app/types";
 import { useAuth } from "../authContext";
 import { useRouter } from "next/navigation";
 import Skeleton from "@/components/Skeleton"; // Skeleton component for loading state
+import { PaginationType } from "./PaginationSelection";
 import { Button } from "@/components/ui/button";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { LuGitPullRequestDraft } from "react-icons/lu";
