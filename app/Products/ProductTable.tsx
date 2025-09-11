@@ -22,7 +22,6 @@ import { Product } from "@/app/types";
 import { useAuth } from "../authContext";
 import { useRouter } from "next/navigation";
 import Skeleton from "@/components/Skeleton"; // Skeleton component for loading state
-import PaginationSelection, { PaginationType } from "./PaginationSelection";
 import { Button } from "@/components/ui/button";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { LuGitPullRequestDraft } from "react-icons/lu";
@@ -211,14 +210,6 @@ export const ProductTable = React.memo(function ProductTable({
                 )}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Pagination Controls */}
-          <div className="flex flex-col items-center mt-4 space-y-2 lg:hidden">
-            <PaginationSelection
-              pagination={pagination}
-              setPagination={setPagination}
-            />
           </div>
 
           {/* Pagination Buttons */}

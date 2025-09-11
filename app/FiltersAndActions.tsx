@@ -275,17 +275,6 @@ export default function FiltersAndActions({
           setPagination={setPagination}
         />
       </div>
-      <StatusDropDown
-        selectedStatuses={selectedStatuses}
-        setSelectedStatuses={setSelectedStatuses}
-      />
-      {/* Pagination */}
-      <div className="flex justify-center">
-        <PaginationSelection
-          pagination={pagination}
-          setPagination={setPagination}
-        />
-      </div>
     </div>
   );
 }

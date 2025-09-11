@@ -81,13 +81,26 @@
    mongod
    ```
 
-5. **Run the development server**
+5. **Seed the Database (Optional)**
+   Populate your database with sample data:
+
+   ```bash
+   npm run seed
+   ```
+
+   This will create:
+
+   - 10 categories (Electronics, Clothing, Home & Garden, etc.)
+   - 5 suppliers with contact information
+   - 100+ products with complete details across all categories
+
+6. **Run the development server**
 
    ```bash
    npm run dev
    ```
 
-6. **Open your browser**
+7. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
