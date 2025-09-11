@@ -148,24 +148,24 @@ export const ProductTable = React.memo(function ProductTable({
   });
 
   return (
-    <div className="font-sans w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+    <div className="font-sans w-full overflow-x-auto">
       {/* Show Skeleton while loading */}
       {isLoading ? (
         <Skeleton rows={5} columns={columns.length} />
       ) : (
         <>
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 shadow-md bg-white dark:bg-slate-900 overflow-x-auto">
-            <Table className="min-w-full">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-900 min-w-full">
+            <Table className="w-full text-xs">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
                     key={headerGroup.id}
-                    className="bg-slate-50 dark:bg-slate-800"
+                    className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
                   >
                     {headerGroup.headers.map((header) => (
                       <TableCell
                         key={header.id}
-                        className="px-4 py-3 text-slate-700 dark:text-slate-200 font-semibold text-sm border-b border-slate-200 dark:border-slate-800"
+                        className="px-3 py-2 font-bold text-xs border-b border-blue-500 whitespace-nowrap text-slate-700 dark:text-slate-200"
                       >
                         {header.isPlaceholder
                           ? null
@@ -184,12 +184,12 @@ export const ProductTable = React.memo(function ProductTable({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
-                      className="hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors duration-150"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-150"
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className="px-4 py-2 text-slate-700 dark:text-slate-200 text-sm border-b border-slate-100 dark:border-slate-800"
+                          className="px-3 py-2 text-slate-700 dark:text-slate-200 text-xs border-b border-slate-100 dark:border-slate-700 whitespace-nowrap"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -203,7 +203,7 @@ export const ProductTable = React.memo(function ProductTable({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="text-center text-slate-400 dark:text-slate-500 py-8"
+                      className="text-center text-slate-400 dark:text-slate-500 py-6 text-xs"
                     >
                       No results.
                     </TableCell>
@@ -222,45 +222,45 @@ export const ProductTable = React.memo(function ProductTable({
           </div>
 
           {/* Pagination Buttons */}
-          <div className="flex flex-wrap justify-center items-center gap-2 mt-6">
+          <div className="flex flex-wrap justify-center items-center gap-1 mt-4">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
+              className="h-8 w-8 p-0 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
-              <BiFirstPage />
+              <BiFirstPage className="h-3 w-3" />
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
+              className="h-8 w-8 p-0 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
-              <GrFormPrevious />
+              <GrFormPrevious className="h-3 w-3" />
             </Button>
-            <span className="text-sm text-slate-500 dark:text-slate-400 px-2">
-              Page {pagination.pageIndex + 1} of {table.getPageCount()}
+            <span className="text-xs text-slate-500 dark:text-slate-400 px-2 min-w-[80px] text-center">
+              {pagination.pageIndex + 1} / {table.getPageCount()}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
+              className="h-8 w-8 p-0 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
-              <GrFormNext />
+              <GrFormNext className="h-3 w-3" />
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
+              className="h-8 w-8 p-0 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
             >
-              <BiLastPage />
+              <BiLastPage className="h-3 w-3" />
             </Button>
           </div>
         </>

@@ -49,69 +49,71 @@ export default function AppHeader() {
       <div className="container mx-auto max-w-7xl px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
         {/* Logo and Welcome Section */}
         <div className="flex items-center gap-4">
-          <div
-            className="flex aspect-square w-10 h-10 items-center justify-center rounded-lg bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 cursor-pointer shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
+            <div
+            className="flex aspect-square w-12 h-12 items-center justify-center rounded-xl bg-slate-700 text-white shadow hover:shadow-md transition-all duration-200 cursor-pointer"
             onClick={() => handleNavigation("/")}
-          >
+            >
             <AiFillProduct className="text-2xl" />
-          </div>
+            </div>
           <div className="text-center sm:text-left">
             <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              Welcome, {user?.name}!
+              Inventory Pro
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {user?.email}
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Welcome back, {user?.name}!
             </p>
           </div>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex items-center gap-2 mt-4 sm:mt-0">
+        <nav className="flex items-center gap-1 mt-4 sm:mt-0">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleNavigation("/")}
-            className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+            className="text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-all duration-200 px-3 py-2"
           >
             <FiHome className="mr-2 h-4 w-4" />
-            Dashboard
+            <span className="hidden sm:inline">Dashboard</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleNavigation("/analytics")}
-            className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+            className="text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-all duration-200 px-3 py-2"
           >
             <FiBarChart className="mr-2 h-4 w-4" />
-            Analytics
+            <span className="hidden sm:inline">Analytics</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleNavigation("/api-docs")}
-            className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+            className="text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-all duration-200 px-3 py-2"
           >
             <FiFileText className="mr-2 h-4 w-4" />
-            API Docs
+            <span className="hidden sm:inline">Docs</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleNavigation("/api-status")}
-            className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+            className="text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-all duration-200 px-3 py-2"
           >
             <FiActivity className="mr-2 h-4 w-4" />
-            API Status
+            <span className="hidden sm:inline">Status</span>
           </Button>
 
-          <ModeToggle />
-          <Button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="h-10 px-6 bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-100 shadow-md hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors rounded-md ml-2"
-          >
-            {isLoggingOut ? "Logging Out..." : "Logout"}
-          </Button>
+          <div className="ml-2 flex items-center gap-2">
+            <ModeToggle />
+            <Button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="h-10 px-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg"
+            >
+              {isLoggingOut ? "..." : "Logout"}
+            </Button>
+          </div>
         </nav>
       </div>
     </header>

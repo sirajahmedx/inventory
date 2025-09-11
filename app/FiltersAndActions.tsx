@@ -189,124 +189,102 @@ export default function FiltersAndActions({
   const filteredProducts = getFilteredProducts();
 
   return (
-    <div className="flex flex-col gap-6 mb-8 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-      {/* Search Bar */}
-      <div className="flex justify-center">
-        <div className="relative w-full max-w-xl">
+    <div className="space-y-6">
+      {/* Search and Quick Actions */}
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+        {/* Search Bar */}
+        <div className="relative flex-1 max-w-md">
           <Input
-            placeholder="Search by Name or SKU..."
+            placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-11 pr-12 w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150 shadow-sm"
+            className="h-12 pl-4 pr-12 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 shadow-sm"
           />
           {searchTerm && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setSearchTerm("")}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-full"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full"
             >
               <IoClose className="h-4 w-4" />
             </Button>
           )}
         </div>
+
+        {/* Quick Add Actions */}
+        <div className="flex gap-3">
+          <AddProductDialog allProducts={allProducts} userId={userId} />
+          <AddCategoryDialog />
+          <AddSupplierDialog />
+        </div>
       </div>
 
-      {/* Filter Area */}
-      <FilterArea
+      {/* Filters Section */}
+      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+          {/* Filter Dropdowns */}
+          <div className="flex flex-wrap gap-3">
+            <CategoryDropDown
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            <StatusDropDown
+              selectedStatuses={selectedStatuses}
+              setSelectedStatuses={setSelectedStatuses}
+            />
+            <SuppliersDropDown
+              selectedSuppliers={selectedSuppliers}
+              setSelectedSuppliers={setSelectedSuppliers}
+            />
+          </div>
+
+          {/* Export Actions */}
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Export {filteredProducts.length} products:
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={exportToCSV}
+                className="flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200"
+              >
+                <FiFileText className="h-4 w-4" />
+                CSV
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={exportToExcel}
+                className="flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:border-green-300 dark:hover:border-green-600 transition-all duration-200"
+              >
+                <FiGrid className="h-4 w-4" />
+                Excel
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center">
+        <PaginationSelection
+          pagination={pagination}
+          setPagination={setPagination}
+        />
+      </div>
+      <StatusDropDown
         selectedStatuses={selectedStatuses}
         setSelectedStatuses={setSelectedStatuses}
-        selectedCategories={selectedCategory}
-        setSelectedCategories={setSelectedCategory}
-        selectedSuppliers={selectedSuppliers}
-        setSelectedSuppliers={setSelectedSuppliers}
       />
-
-      {/* Export Section */}
+      {/* Pagination */}
       <div className="flex justify-center">
-        <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            Export {filteredProducts.length} products:
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={exportToCSV}
-            className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
-          >
-            <FiFileText className="h-4 w-4" />
-            CSV
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={exportToExcel}
-            className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-colors duration-150"
-          >
-            <FiGrid className="h-4 w-4" />
-            Excel
-          </Button>
-        </div>
-      </div>
-
-      {/* Large Screen Layout */}
-      <div className="hidden lg:flex justify-between items-center gap-6">
-        {/* Add Buttons */}
-        <div className="flex gap-4">
-          <AddProductDialog allProducts={allProducts} userId={userId} />
-          <AddCategoryDialog />
-          <AddSupplierDialog />
-        </div>
-
-        {/* Pagination Selection */}
-        <div className="flex justify-center">
-          <PaginationSelection
-            pagination={pagination}
-            setPagination={setPagination}
-          />
-        </div>
-
-        {/* Filter Buttons */}
-        <div className="flex gap-4">
-          <CategoryDropDown
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-          <StatusDropDown
-            selectedStatuses={selectedStatuses}
-            setSelectedStatuses={setSelectedStatuses}
-          />
-          <SuppliersDropDown
-            selectedSuppliers={selectedSuppliers}
-            setSelectedSuppliers={setSelectedSuppliers}
-          />
-        </div>
-      </div>
-
-      {/* Medium and Small Screen Layout */}
-      <div className="flex flex-col lg:hidden gap-6">
-        {/* Add Buttons */}
-        <div className="flex flex-col gap-4">
-          <AddProductDialog allProducts={allProducts} userId={userId} />
-          <AddCategoryDialog />
-          <AddSupplierDialog />
-        </div>
-
-        {/* Filter Buttons */}
-        <div className="flex flex-col gap-4">
-          <CategoryDropDown
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-          <StatusDropDown
-            selectedStatuses={selectedStatuses}
-            setSelectedStatuses={setSelectedStatuses}
-          />
-          <SuppliersDropDown
-            selectedSuppliers={selectedSuppliers}
-            setSelectedSuppliers={setSelectedSuppliers}
-          />
-        </div>
+        <PaginationSelection
+          pagination={pagination}
+          setPagination={setPagination}
+        />
       </div>
     </div>
   );

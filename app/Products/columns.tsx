@@ -34,7 +34,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({ column, label }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg select-none cursor-pointer transition-colors duration-150
+          className={`flex items-center gap-1 px-2 py-1 rounded select-none cursor-pointer transition-colors duration-150
             ${
               isSorted
                 ? "text-blue-600 dark:text-blue-400 bg-slate-100 dark:bg-slate-800"
@@ -43,8 +43,8 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({ column, label }) => {
             hover:bg-blue-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700`}
           aria-label={`Sort by ${label}`}
         >
-          <span className="font-medium tracking-tight">{label}</span>
-          <SortingIcon className="h-4 w-4" />
+          <span className="font-medium tracking-tight text-xs">{label}</span>
+          <SortingIcon className="h-3 w-3" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -54,17 +54,17 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({ column, label }) => {
       >
         <DropdownMenuItem
           onClick={() => column.toggleSorting(false)}
-          className="flex items-center gap-2 px-2 py-2 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-md cursor-pointer"
+          className="flex items-center gap-1 px-2 py-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded cursor-pointer"
         >
-          <IoMdArrowUp className="h-4 w-4 text-blue-500" />
-          <span className="text-slate-700 dark:text-slate-200">Asc</span>
+          <IoMdArrowUp className="h-3 w-3 text-blue-500" />
+          <span className="text-xs">Asc</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => column.toggleSorting(true)}
-          className="flex items-center gap-2 px-2 py-2 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-md cursor-pointer"
+          className="flex items-center gap-1 px-2 py-1 hover:bg-blue-50 dark:hover:bg-slate-700 rounded cursor-pointer"
         >
-          <IoMdArrowDown className="h-4 w-4 text-blue-500" />
-          <span className="text-slate-700 dark:text-slate-200">Desc</span>
+          <IoMdArrowDown className="h-3 w-3 text-blue-500" />
+          <span className="text-xs">Desc</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -104,7 +104,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const name = row.original.name;
       return (
-        <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[180px]">
+        <span className="text-slate-900 dark:text-slate-100 font-semibold min-w-[150px] max-w-[200px] truncate text-xs">
           {name}
         </span>
       );
@@ -115,7 +115,7 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "sku",
     header: ({ column }) => <SortableHeader column={column} label="SKU" />,
     cell: ({ row }) => (
-      <span className="text-slate-700 dark:text-slate-200 font-mono text-xs bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">
+      <span className="text-slate-700 dark:text-slate-200 font-mono text-xs bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded border border-slate-200 dark:border-slate-700 min-w-[100px]">
         {row.original.sku}
       </span>
     ),
@@ -128,9 +128,9 @@ export const columns: ColumnDef<Product>[] = [
       const isLowStock = quantity > 0 && quantity < 10;
       const isOutOfStock = quantity === 0;
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 min-w-[80px]">
           <span
-            className={`font-semibold px-2 py-1 rounded-md ${
+            className={`font-semibold px-2 py-1 rounded text-xs ${
               isLowStock
                 ? "bg-orange-50 text-orange-700 dark:bg-orange-900 dark:text-orange-300"
                 : isOutOfStock
@@ -140,8 +140,8 @@ export const columns: ColumnDef<Product>[] = [
           >
             {quantity}
           </span>
-          {isLowStock && <AlertTriangle className="h-4 w-4 text-orange-500" />}
-          {isOutOfStock && <AlertTriangle className="h-4 w-4 text-red-500" />}
+          {isLowStock && <AlertTriangle className="h-3 w-3 text-orange-500" />}
+          {isOutOfStock && <AlertTriangle className="h-3 w-3 text-red-500" />}
         </div>
       );
     },
@@ -150,7 +150,7 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "price",
     header: ({ column }) => <SortableHeader column={column} label="Price" />,
     cell: ({ getValue }) => (
-      <span className="text-blue-700 dark:text-blue-400 font-semibold">
+      <span className="text-blue-700 dark:text-blue-400 font-semibold min-w-[60px] text-xs">
         ${getValue<number>().toFixed(2)}
       </span>
     ),
@@ -177,7 +177,7 @@ export const columns: ColumnDef<Product>[] = [
       }
       return (
         <span
-          className={`px-3 py-1 rounded-full font-medium ${colorClass} flex gap-1 items-center w-fit shadow-sm border border-slate-200 dark:border-slate-800`}
+          className={`px-2 py-1 rounded-full font-medium text-xs ${colorClass} flex gap-1 items-center w-fit shadow-sm border border-slate-200 dark:border-slate-800 min-w-[70px] justify-center`}
         >
           {status}
         </span>
@@ -190,7 +190,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const categoryName = row.original.category;
       return (
-        <span className="text-slate-700 dark:text-slate-200 font-medium">
+        <span className="text-slate-700 dark:text-slate-200 font-medium min-w-[100px] text-xs">
           {categoryName || "Unknown"}
         </span>
       );
@@ -202,7 +202,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const supplierName = row.original.supplier;
       return (
-        <span className="text-slate-700 dark:text-slate-200 font-medium">
+        <span className="text-slate-700 dark:text-slate-200 font-medium min-w-[100px] text-xs">
           {supplierName || "Unknown"}
         </span>
       );
@@ -224,11 +224,11 @@ export const columns: ColumnDef<Product>[] = [
         supplier: product.supplier,
       });
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-w-[60px]">
           <QRCodeHover
             data={qrData}
             title={`${product.name} QR`}
-            size={200}
+            size={150}
             // className="rounded-lg shadow-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2"
           />
         </div>
@@ -239,7 +239,7 @@ export const columns: ColumnDef<Product>[] = [
     id: "actions",
     cell: ({ row }) => {
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-w-[60px]">
           <ProductDropDown row={row} />
         </div>
       );
