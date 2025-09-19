@@ -10,7 +10,6 @@ import {
 
 import { Dispatch, SetStateAction } from "react";
 
-// Define PaginationType locally
 export interface PaginationType {
   pageIndex: number;
   pageSize: number;

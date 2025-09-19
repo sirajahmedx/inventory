@@ -1,7 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-//import axios from "axios";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import Cookies from "js-cookie";
 import axiosInstance from "@/utils/axiosInstance";
 import { getSessionClient } from "@/utils/auth";
@@ -17,6 +22,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,137 +32,165 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Initialize local storage with default values if not already set
-    if (localStorage.getItem("isAuth") === null) {
-      localStorage.setItem("isAuth", "false");
-    }
-    if (localStorage.getItem("isLoggedIn") === null) {
-      localStorage.setItem("isLoggedIn", "false");
-    }
-    if (localStorage.getItem("token") === null) {
-      localStorage.setItem("token", "");
-    }
-    if (localStorage.getItem("getSession") === null) {
-      localStorage.setItem("getSession", "");
-    }
-    if (localStorage.getItem("theme") === null) {
-      localStorage.setItem("theme", "light");
-    }
-    if (localStorage.getItem("jiraBaseUrl") === null) {
-      localStorage.setItem("jiraBaseUrl", "atlassian.net");
-    }
-    if (localStorage.getItem("captureCloudUrl") === null) {
-      localStorage.setItem(
-        "captureCloudUrl",
-        "https://prod-capture.zephyr4jiracloud.com/capture"
-      );
-    }
+  const clearAuthData = useCallback(() => {
+    setIsLoggedIn(false);
+    setUser(null);
+    Cookies.remove("session_id", { path: "/" });
+    localStorage.removeItem("isAuth");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
+    localStorage.removeItem("getSession");
+  }, []);
 
-    const checkSession = async () => {
+  const checkSession = useCallback(async () => {
+    try {
+      setIsLoading(true);
       const sessionId = Cookies.get("session_id");
-      // Debug log - only log in development
+
       if (process.env.NODE_ENV === "development") {
-        console.log("Session ID from cookies:", sessionId);
+        console.log("🔍 Checking session, cookie found:", !!sessionId);
       }
-      if (sessionId) {
-        const session = await getSessionClient();
-        // Debug log - only log in development
+
+      if (!sessionId) {
         if (process.env.NODE_ENV === "development") {
-          console.log("Session from getSessionClient:", session);
+          console.log("❌ No session cookie found");
         }
-        if (session) {
-          setIsLoggedIn(true);
-          setUser({
-            id: session.id,
-            name: session.name,
-            email: session.email,
-          });
-          // Debug log - only log in development
-          if (process.env.NODE_ENV === "development") {
-            console.log("User from session:", session);
-          }
-          // Set necessary attributes in local storage
-          localStorage.setItem("isAuth", "true");
-          localStorage.setItem("isLoggedIn", "true");
-          localStorage.setItem("token", sessionId);
-          localStorage.setItem("getSession", JSON.stringify(session));
-        } else {
-          clearAuthData();
+        clearAuthData();
+        return;
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("🔄 Validating session with API...");
+      }
+
+      const session = await getSessionClient();
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "📋 Session validation result:",
+          session ? "SUCCESS" : "FAILED"
+        );
+      }
+
+      if (session && session.id) {
+        setIsLoggedIn(true);
+        setUser({
+          id: session.id,
+          name: session.name,
+          email: session.email,
+        });
+
+        // Update localStorage for consistency
+        localStorage.setItem("isAuth", "true");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("token", sessionId);
+        localStorage.setItem("getSession", JSON.stringify(session));
+
+        if (process.env.NODE_ENV === "development") {
+          console.log("✅ Session restored for user:", session.email);
         }
       } else {
+        if (process.env.NODE_ENV === "development") {
+          console.log("❌ Session validation failed, clearing auth data");
+        }
         clearAuthData();
       }
-    };
+    } catch (error) {
+      console.error("❌ Session check failed:", error);
+      clearAuthData();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [clearAuthData]);
 
+  useEffect(() => {
     checkSession();
-  }, []);
+
+    // Set up periodic session validation (every 5 minutes)
+    const interval = setInterval(() => {
+      if (isLoggedIn) {
+        checkSession();
+      }
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [checkSession, isLoggedIn]);
 
   const login = async (email: string, password: string) => {
     try {
+      setIsLoading(true);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("🔐 Attempting login for:", email);
+      }
+
       const response = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
 
       const result = response.data;
-      setIsLoggedIn(true);
-      setUser({
-        id: result.userId,
-        name: result.userName,
-        email: result.userEmail,
-      });
-      Cookies.set("session_id", result.sessionId);
-      // Debug log - only log in development
-      if (process.env.NODE_ENV === "development") {
-        console.log("Login successful, session ID set:", result.sessionId);
 
-        // Debug log to verify cookie
-        console.log(
-          "Session ID from Cookies after login:",
-          Cookies.get("session_id")
-        );
+      if (process.env.NODE_ENV === "development") {
+        console.log("📨 Login API response:", result);
       }
 
-      // Set necessary attributes in local storage
-      localStorage.setItem("isAuth", "true");
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("token", result.sessionId);
-      localStorage.setItem("getSession", JSON.stringify(result));
+      if (result.sessionId) {
+        // Set cookie with proper settings
+        Cookies.set("session_id", result.sessionId, {
+          path: "/",
+          secure: window.location.protocol === "https:",
+          sameSite: window.location.protocol === "https:" ? "strict" : "lax",
+          expires: 7, // 7 days
+        });
+
+        setIsLoggedIn(true);
+        setUser({
+          id: result.userId,
+          name: result.userName,
+          email: result.userEmail,
+        });
+
+        // Update localStorage for consistency
+        localStorage.setItem("isAuth", "true");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("token", result.sessionId);
+        localStorage.setItem("getSession", JSON.stringify(result));
+
+        if (process.env.NODE_ENV === "development") {
+          console.log("✅ Login successful for user:", result.userEmail);
+        }
+      } else {
+        throw new Error("Login failed - no session ID received");
+      }
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.error("❌ Login error:", error);
+      clearAuthData();
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const logout = async () => {
     try {
+      setIsLoading(true);
       await axiosInstance.post("/api/auth/logout");
-      clearAuthData();
-      // Debug log - only log in development
-      if (process.env.NODE_ENV === "development") {
-        console.log("Logout successful, session ID removed");
-      }
     } catch (error) {
-      console.error("Error logging out:", error);
-      throw error;
+      console.error("Logout API error:", error);
+      // Continue with local logout even if API fails
+    } finally {
+      clearAuthData();
+      setIsLoading(false);
     }
   };
 
-  const clearAuthData = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-    Cookies.remove("session_id");
-    // Clear attributes from local storage
-    localStorage.setItem("isAuth", "false");
-    localStorage.setItem("isLoggedIn", "false");
-    localStorage.setItem("token", "");
-    localStorage.setItem("getSession", "");
-  };
-
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, user, login, logout, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

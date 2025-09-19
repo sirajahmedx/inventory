@@ -22,7 +22,6 @@ export default function SKU({ allProducts }: SKUProps) {
   const handleSkuChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const sku = event.target.value.trim();
 
-    // Check if the SKU already exists
     const isSkuTaken = allProducts.some(
       (product) => product.sku.toLowerCase() === sku.toLowerCase()
     );
@@ -47,7 +46,7 @@ export default function SKU({ allProducts }: SKUProps) {
         id="sku"
         className="h-11 shadow-none"
         placeholder="ABC001"
-        onChange={handleSkuChange} // Validate SKU on change
+        onChange={handleSkuChange}
       />
       {(skuError || errors.sku?.message) && (
         <div className="text-red-500 flex gap-1 items-center text-[13px]">

@@ -42,6 +42,4 @@ const UserSchema: Schema = new Schema({
   collection: 'users'
 });
 
-// No additional index needed for username since unique: true creates it automatically
-
 export default mongoose?.models?.User || mongoose?.model<IUser>('User', UserSchema);

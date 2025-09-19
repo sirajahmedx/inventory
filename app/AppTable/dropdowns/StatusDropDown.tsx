@@ -58,7 +58,6 @@ export function StatusDropDown({
       const updatedStatuses = prev.includes(value)
         ? prev.filter((status) => status !== value)
         : [...prev, value];
-      console.log("Updated Selected Statuses:", updatedStatuses); // Debug log
       return updatedStatuses;
     });
   }

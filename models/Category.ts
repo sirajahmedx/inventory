@@ -25,8 +25,7 @@ const CategorySchema: Schema = new Schema({
   collection: 'categories'
 });
 
-// Index for better query performance
 CategorySchema.index({ userId: 1 });
-CategorySchema.index({ name: 1, userId: 1 }); // Compound index for unique category names per user
+CategorySchema.index({ name: 1, userId: 1 });
 
 export default mongoose?.models?.Category || mongoose?.model<ICategory>('Category', CategorySchema);

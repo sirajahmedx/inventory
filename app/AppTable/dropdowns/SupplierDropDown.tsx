@@ -41,14 +41,12 @@ export function SuppliersDropDown({
       const updatedSuppliers = prev.includes(value)
         ? prev.filter((supplier) => supplier !== value)
         : [...prev, value];
-      console.log("Updated Selected Suppliers:", updatedSuppliers); // Debug log
       return updatedSuppliers;
     });
   }
 
   function clearFilters() {
     setSelectedSuppliers([]);
-    console.log("Cleared Selected Suppliers"); // Debug log
   }
 
   return (

@@ -2,9 +2,9 @@
 
 import React from "react";
 
-export const dynamic = "error"; // Ensure static rendering
-export const revalidate = 0; // Disable ISR (Incremental Static Regeneration)
-export const fetchCache = "only-no-store"; // Prevent caching
+export const dynamic = "error";
+export const revalidate = 0;
+export const fetchCache = "only-no-store";
 
 export default function NotFoundPage() {
   return (

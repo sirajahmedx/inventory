@@ -9,7 +9,6 @@ async function handler(
   res: NextApiResponse
 ) {
   try {
-    // Connect to database
     await connectToDatabase();
 
     const session = await getSessionServer(req, res);
@@ -118,7 +117,6 @@ async function handler(
             return res.status(400).json({ error: "Supplier ID is required" });
           }
 
-          // Check if the supplier exists
           const supplier = await Supplier.findById(id);
           if (!supplier) {
             return res.status(404).json({ error: "Supplier not found" });

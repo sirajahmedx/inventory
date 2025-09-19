@@ -38,8 +38,7 @@ const SupplierSchema: Schema = new Schema({
   collection: 'suppliers'
 });
 
-// Index for better query performance
 SupplierSchema.index({ userId: 1 });
-SupplierSchema.index({ name: 1, userId: 1 }); // Compound index for unique supplier names per user
+SupplierSchema.index({ name: 1, userId: 1 });
 
 export default mongoose?.models?.Supplier || mongoose?.model<ISupplier>('Supplier', SupplierSchema);

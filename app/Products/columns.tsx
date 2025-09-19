@@ -2,7 +2,6 @@
 
 import { Product } from "@/app/types";
 import { Column, ColumnDef } from "@tanstack/react-table";
-//import { ReactNode } from "react";
 
 import ProductDropDown from "./ProductsDropDown";
 
@@ -225,12 +224,7 @@ export const columns: ColumnDef<Product>[] = [
       });
       return (
         <div className="flex justify-center items-center min-w-[55px]">
-          <QRCodeHover
-            data={qrData}
-            title={`${product.name} QR`}
-            size={120}
-            // className="rounded-lg shadow-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2"
-          />
+          <QRCodeHover data={qrData} title={`${product.name} QR`} size={120} />
         </div>
       );
     },
@@ -247,7 +241,6 @@ export const columns: ColumnDef<Product>[] = [
   },
 ];
 
-// Debug log for columns - only log in development
 if (process.env.NODE_ENV === "development") {
   console.log("Columns passed to useReactTable:", columns);
 }

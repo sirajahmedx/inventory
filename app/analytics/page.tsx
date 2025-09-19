@@ -45,7 +45,6 @@ import { useAuth } from "../authContext";
 import AuthenticatedLayout from "../components/AuthenticatedLayout";
 import { useProductStore } from "../useProductStore";
 
-// Project theme palette: slate, light blue, gray, white, black
 const COLORS = ["#64748b", "#60a5fa", "#d1d5db", "#0f172a", "#f1f5f9"];
 
 export default function AnalyticsPage() {
@@ -53,7 +52,6 @@ export default function AnalyticsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Calculate analytics data
   const analyticsData = useMemo(() => {
     if (!allProducts || allProducts.length === 0) {
       return {
@@ -93,7 +91,6 @@ export default function AnalyticsPage() {
       0
     );
 
-    // Category distribution
     const categoryMap = new Map<string, number>();
     allProducts.forEach((product) => {
       const category = product.category || "Unknown";
@@ -103,7 +100,6 @@ export default function AnalyticsPage() {
       ([name, value]) => ({ name, value })
     );
 
-    // Status distribution
     const statusMap = new Map<string, number>();
     allProducts.forEach((product) => {
       const status = product.status || "Unknown";
@@ -113,7 +109,6 @@ export default function AnalyticsPage() {
       ([name, value]) => ({ name, value })
     );
 
-    // Price range distribution
     const priceRanges = [
       { name: "$0-$10", min: 0, max: 10 },
       { name: "$10-$50", min: 10, max: 50 },
@@ -129,7 +124,6 @@ export default function AnalyticsPage() {
       ).length,
     }));
 
-    // Monthly trend (simulated data)
     const monthlyTrend = [
       { month: "Jan", products: Math.floor(totalProducts * 0.8) },
       { month: "Feb", products: Math.floor(totalProducts * 0.85) },
@@ -139,7 +133,6 @@ export default function AnalyticsPage() {
       { month: "Jun", products: Math.floor(totalProducts * 1.05) },
     ];
 
-    // Top products by value
     const topProducts = allProducts
       .sort((a, b) => b.price * b.quantity - a.price * a.quantity)
       .slice(0, 5)
@@ -149,7 +142,6 @@ export default function AnalyticsPage() {
         quantity: product.quantity,
       }));
 
-    // Low stock products
     const lowStockProducts = allProducts
       .filter((product) => product.quantity > 0 && product.quantity < 10)
       .sort((a, b) => a.quantity - b.quantity)

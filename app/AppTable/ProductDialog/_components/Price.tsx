@@ -33,8 +33,6 @@ export default function Price() {
             allowNegative={false}
             onValueChange={(values) => {
               const { floatValue, value } = values;
-              // If the input is empty (value is empty string), pass empty string
-              // Otherwise pass the float value
               onChange(value === "" ? "" : floatValue ?? 0);
             }}
           />

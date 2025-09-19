@@ -23,9 +23,9 @@ export default function AddCategoryDialog() {
   const [categoryName, setCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Button loading state
-  const [isEditing, setIsEditing] = useState(false); // Loading state for edit
-  const [isDeleting, setIsDeleting] = useState(false); // Loading state for delete
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     categories,
     addCategory,
@@ -52,7 +52,6 @@ export default function AddCategoryDialog() {
       return;
     }
 
-    // Add this check
     if (!user?.id) {
       toast({
         title: "Error",
@@ -78,11 +77,8 @@ export default function AddCategoryDialog() {
 
       const response = await axiosInstance.post("/api/categories", requestData);
       console.log("Response received:", response);
-
-      // ... rest of your code
     } catch (error: any) {
       console.error("Error adding category:", error);
-      // Add more detailed error logging
       console.error("Error response:", error?.response?.data);
       console.error("Error status:", error?.response?.status);
 
@@ -106,7 +102,7 @@ export default function AddCategoryDialog() {
       return;
     }
 
-    setIsEditing(true); // Start loading
+    setIsEditing(true);
     try {
       const response = await axiosInstance.put("/api/categories", {
         id: categoryId,
@@ -133,14 +129,13 @@ export default function AddCategoryDialog() {
         variant: "destructive",
       });
     } finally {
-      setIsEditing(false); // Stop loading
+      setIsEditing(false);
     }
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    setIsDeleting(true); // Start loading
+    setIsDeleting(true);
 
-    // Find the category name before deleting for the toast message
     const categoryToDelete = categories.find((cat) => cat.id === categoryId);
     const categoryName = categoryToDelete?.name || "Unknown Category";
 
@@ -166,7 +161,7 @@ export default function AddCategoryDialog() {
         variant: "destructive",
       });
     } finally {
-      setIsDeleting(false); // Stop loading
+      setIsDeleting(false);
     }
   };
 

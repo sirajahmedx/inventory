@@ -62,7 +62,7 @@ export default function ApiStatusPage() {
     const startTime = Date.now();
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(path, {
         method: "GET",
@@ -116,8 +116,7 @@ export default function ApiStatusPage() {
   };
 
   const calculateUptime = (): string => {
-    // Simulate uptime calculation - in a real app, you'd track this from server start
-    const startTime = new Date(Date.now() - Math.random() * 86400000); // Random start time within last 24h
+    const startTime = new Date(Date.now() - Math.random() * 86400000);
     const now = new Date();
     const diff = now.getTime() - startTime.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));

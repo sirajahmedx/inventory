@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FiPackage, FiTrendingUp, FiUsers } from "react-icons/fi";
 import FiltersAndActions from "../FiltersAndActions";
@@ -9,51 +8,49 @@ import { ProductTable } from "../Products/ProductTable";
 import { columns } from "../Products/columns";
 import { useAuth } from "../authContext";
 import { useProductStore } from "../useProductStore";
+import { useRouter } from "next/navigation";
 
 const AppTable = React.memo(() => {
-  const { allProducts, loadProducts, isLoading } = useProductStore();
-  const { isLoggedIn, user } = useAuth();
+  const {
+    allProducts,
+    loadProducts,
+    isLoading: productsLoading,
+  } = useProductStore();
+  const { isLoggedIn, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
-  // State for column filters, search term, and pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState<PaginationType>({
     pageIndex: 0,
     pageSize: 8,
   });
 
-  // State for selected filters
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
 
-  // Memoize the loadProducts callback to prevent unnecessary re-renders
-  const handleLoadProducts = useCallback(() => {
+  const loadProductsCallback = useCallback(() => {
     if (isLoggedIn) {
       loadProducts();
     }
   }, [isLoggedIn, loadProducts]);
 
-  // Load products if the user is logged in
   useEffect(() => {
     if (!isLoggedIn) {
       router.push("/login");
     } else {
-      handleLoadProducts();
+      loadProductsCallback();
     }
-  }, [isLoggedIn, handleLoadProducts, router]);
+  }, [isLoggedIn, loadProductsCallback, router]);
 
   useEffect(() => {
-    // Debug log for products - only log in development
     if (process.env.NODE_ENV === "development") {
       console.log("All Products in AppTable:", allProducts);
     }
   }, [allProducts]);
 
-  // Memoize the product count
   const productCount = useMemo(() => allProducts.length, [allProducts]);
 
-  // Calculate some stats
   const availableProducts = useMemo(
     () => allProducts.filter((p) => p.status === "Available").length,
     [allProducts]
@@ -63,13 +60,20 @@ const AppTable = React.memo(() => {
     [allProducts]
   );
 
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   if (!isLoggedIn || !user) {
     return null;
   }
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
@@ -114,9 +118,7 @@ const AppTable = React.memo(() => {
         </div>
       </div>
 
-      {/* Products Section */}
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-        {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -139,9 +141,7 @@ const AppTable = React.memo(() => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6">
-          {/* Filters and Actions */}
           <FiltersAndActions
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -157,13 +157,12 @@ const AppTable = React.memo(() => {
             userId={user.id}
           />
 
-          {/* Product Table */}
           <div className="mt-6">
             <ProductTable
               data={allProducts || []}
               columns={columns}
               userId={user.id}
-              isLoading={isLoading}
+              isLoading={productsLoading}
               searchTerm={searchTerm}
               pagination={pagination}
               setPagination={setPagination}

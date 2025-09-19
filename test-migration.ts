@@ -4,11 +4,9 @@ async function testMongooseMigration() {
   try {
     console.log('🔄 Testing Mongoose Migration...\n');
 
-    // Connect to database
     await connectToDatabase();
     console.log('✅ Database connected\n');
 
-    // Test User creation
     console.log('🧪 Testing User operations...');
     const testUser = new User({
       name: 'Test User',
@@ -19,7 +17,6 @@ async function testMongooseMigration() {
     const savedUser = await testUser.save();
     console.log('✅ User created:', savedUser._id);
 
-    // Test Category creation
     console.log('\n🧪 Testing Category operations...');
     const testCategory = new Category({
       name: 'Test Category',
@@ -28,7 +25,6 @@ async function testMongooseMigration() {
     const savedCategory = await testCategory.save();
     console.log('✅ Category created:', savedCategory._id);
 
-    // Test Supplier creation
     console.log('\n🧪 Testing Supplier operations...');
     const testSupplier = new Supplier({
       name: 'Test Supplier',
@@ -38,7 +34,6 @@ async function testMongooseMigration() {
     const savedSupplier = await testSupplier.save();
     console.log('✅ Supplier created:', savedSupplier._id);
 
-    // Test Product creation
     console.log('\n🧪 Testing Product operations...');
     const testProduct = new Product({
       name: 'Test Product',
@@ -53,7 +48,6 @@ async function testMongooseMigration() {
     const savedProduct = await testProduct.save();
     console.log('✅ Product created:', savedProduct._id);
 
-    // Test Product population
     console.log('\n🧪 Testing Product population...');
     const populatedProduct = await Product.findById(savedProduct._id)
       .populate('categoryId', 'name')
@@ -64,7 +58,6 @@ async function testMongooseMigration() {
       supplier: populatedProduct?.supplierId?.name
     });
 
-    // Test queries
     console.log('\n🧪 Testing queries...');
     const userProducts = await Product.find({ userId: savedUser._id });
     console.log('✅ Found products for user:', userProducts.length);
@@ -75,7 +68,6 @@ async function testMongooseMigration() {
     const userSuppliers = await Supplier.find({ userId: savedUser._id });
     console.log('✅ Found suppliers for user:', userSuppliers.length);
 
-    // Clean up test data
     console.log('\n🧹 Cleaning up test data...');
     await Product.findByIdAndDelete(savedProduct._id);
     await Category.findByIdAndDelete(savedCategory._id);
@@ -96,5 +88,4 @@ async function testMongooseMigration() {
   }
 }
 
-// Run the test
 testMongooseMigration();

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSessionServer } from "../utils/auth"; // Use named import
+import { getSessionServer } from "../utils/auth";
 
 export const authMiddleware = async (
   req: NextApiRequest,
@@ -12,7 +12,6 @@ export const authMiddleware = async (
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Attach user to the request object
   (req as any).user = user;
   next();
 };

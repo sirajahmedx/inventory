@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -21,7 +20,7 @@ import {
 import { Product } from "@/app/types";
 import { useAuth } from "../authContext";
 import { useRouter } from "next/navigation";
-import Skeleton from "@/components/Skeleton"; // Skeleton component for loading state
+import Skeleton from "@/components/Skeleton";
 import { PaginationType } from "./PaginationSelection";
 import { Button } from "@/components/ui/button";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
@@ -45,7 +44,6 @@ interface DataTableProps<TData, TValue> {
   selectedSuppliers: string[];
 }
 
-// Function to return color based on status
 function returnColor(status: string) {
   switch (status) {
     case "Available":
@@ -59,7 +57,6 @@ function returnColor(status: string) {
   }
 }
 
-// Function to return icon based on status
 function returnIcon(status: string) {
   switch (status) {
     case "Available":
@@ -97,14 +94,12 @@ export const ProductTable = React.memo(function ProductTable({
   }, [isLoggedIn, router]);
 
   const filteredData = useMemo(() => {
-    // Debug log - only log in development
     if (process.env.NODE_ENV === "development") {
       console.log("Search term:", searchTerm);
       console.log("Data length:", data.length);
     }
 
     const filtered = data.filter((product) => {
-      // Search term filtering
       const searchMatch =
         !searchTerm ||
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -125,7 +120,6 @@ export const ProductTable = React.memo(function ProductTable({
       return searchMatch && categoryMatch && supplierMatch && statusMatch;
     });
 
-    // Debug log - only log in development
     if (process.env.NODE_ENV === "development") {
       console.log("Filtered data length:", filtered.length);
     }

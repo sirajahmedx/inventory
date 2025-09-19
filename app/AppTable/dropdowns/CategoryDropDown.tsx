@@ -32,13 +32,12 @@ export function CategoryDropDown({
 }: CategoryDropDownProps) {
   const [open, setOpen] = React.useState(false);
   const { categories, loadCategories } = useProductStore();
-  const { user } = useAuth(); // Get the logged-in user's info
+  const { user } = useAuth();
 
   React.useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
-  // Filter categories by userId
   const userCategories = React.useMemo(() => {
     return categories.filter((category) => category.userId === user?.id);
   }, [categories, user]);
@@ -48,14 +47,12 @@ export function CategoryDropDown({
       const updatedCategories = prev.includes(value)
         ? prev.filter((category) => category !== value)
         : [...prev, value];
-      console.log("Updated Selected Categories:", updatedCategories); // Debug log
       return updatedCategories;
     });
   }
 
   function clearFilters() {
     setSelectedCategory([]);
-    console.log("Cleared Selected Categories");
   }
 
   return (

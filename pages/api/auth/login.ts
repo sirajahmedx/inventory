@@ -6,34 +6,14 @@ import Cookies from "cookies";
 import allowCors from "@/utils/cors";
 
 async function login(req: NextApiRequest, res: NextApiResponse) {
-  const allowedOrigins = [
-    "http://localhost:3000",
-    req.headers.origin,
-  ];
-  const origin = req.headers.origin;
-
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "http://localhost:3000"
-  );
-  }
-
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Handle preflight requests
+    return res.status(200).end();
   }
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Defensive: Ensure req.body is an object
   if (!req.body || typeof req.body !== "object") {
     console.error("Request body is missing or not an object", req.body);
     return res.status(400).json({ error: "Invalid request body" });
@@ -47,7 +27,6 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    // Connect to database
     await connectToDatabase();
 
     const user = await User.findOne({ email });
@@ -83,17 +62,17 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
         .json({ error: "Failed to generate session token" });
     }
 
-    // Determine if the connection is secure
     const isSecure =
       req.headers["x-forwarded-proto"] === "https" ||
-      process.env.NODE_ENV !== "development";
+      process.env.NODE_ENV === "production";
 
     const cookies = new Cookies(req, res, { secure: isSecure });
     cookies.set("session_id", token, {
-      httpOnly: true,
-      secure: isSecure, // Dynamically set secure flag
-      sameSite: "none", // Allow cross-origin cookies
-      maxAge: 60 * 60 * 1000, // 1 hour
+      httpOnly: false, // Allow client-side access for session management
+      secure: isSecure,
+      sameSite: isSecure ? "strict" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
 
     console.log("Login successful, session ID set:", token);

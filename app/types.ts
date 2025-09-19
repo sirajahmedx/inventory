@@ -1,6 +1,3 @@
-//import { ReactNode } from "react";
-
-// Define the Product interface
 export interface Product {
   id: string;
   name: string;
@@ -16,14 +13,12 @@ export interface Product {
   supplier?: string;
 }
 
-// Define the Supplier interface
 export interface Supplier {
   id: string;
   name: string;
   userId: string;
 }
 
-// Define the Category interface
 export interface Category {
   id: string;
   name: string;

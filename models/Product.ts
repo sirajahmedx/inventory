@@ -12,7 +12,6 @@ export interface IProduct extends Document {
   userId: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt?: Date;
-  // Populated fields (not stored in DB)
   category?: string;
   supplier?: string;
 }
@@ -69,7 +68,6 @@ const ProductSchema: Schema = new Schema({
   collection: 'products'
 });
 
-// Index for better query performance (SKU is already indexed by unique)
 ProductSchema.index({ categoryId: 1 });
 ProductSchema.index({ supplierId: 1 });
 ProductSchema.index({ status: 1 });

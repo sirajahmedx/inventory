@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useProductStore } from "./useProductStore";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react"; // Import useState for loading state
+import { useState } from "react";
 
 export function DeleteDialog() {
   const {
@@ -21,26 +21,23 @@ export function DeleteDialog() {
     deleteProduct,
   } = useProductStore();
   const { toast } = useToast();
-  const [isDeleting, setIsDeleting] = useState(false); // Local loading state
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function deleteProductFx() {
     if (selectedProduct) {
-      setIsDeleting(true); // Start loading
+      setIsDeleting(true);
 
       try {
         const result = await deleteProduct(selectedProduct.id);
         if (result.success) {
-          // Show success toast
           toast({
             title: "Product Deleted Successfully!",
             description: `"${selectedProduct.name}" has been permanently deleted.`,
           });
 
-          // Close dialog and clear selection
           setOpenDialog(false);
           setSelectedProduct(null);
         } else {
-          // Show error toast
           toast({
             title: "Delete Failed",
             description: "Failed to delete the product. Please try again.",
@@ -48,7 +45,6 @@ export function DeleteDialog() {
           });
         }
       } catch (error) {
-        // Show error toast
         toast({
           title: "Delete Failed",
           description:
@@ -56,7 +52,7 @@ export function DeleteDialog() {
           variant: "destructive",
         });
       } finally {
-        setIsDeleting(false); // Stop loading
+        setIsDeleting(false);
       }
     }
   }

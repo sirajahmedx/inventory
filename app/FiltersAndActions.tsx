@@ -1,6 +1,5 @@
 "use client";
 
-//import React, { useEffect } from "react";
 import { Product } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,7 +53,6 @@ export default function FiltersAndActions({
 }: FiltersAndActionsProps) {
   const { toast } = useToast();
 
-  // Filter products based on current filters
   const getFilteredProducts = () => {
     return allProducts.filter((product) => {
       const searchMatch =
@@ -155,16 +153,15 @@ export default function FiltersAndActions({
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Products");
 
-      // Auto-size columns
       const colWidths = [
-        { wch: 20 }, // Product Name
-        { wch: 15 }, // SKU
-        { wch: 10 }, // Price
-        { wch: 10 }, // Quantity
-        { wch: 12 }, // Status
-        { wch: 15 }, // Category
-        { wch: 15 }, // Supplier
-        { wch: 12 }, // Created Date
+        { wch: 20 },
+        { wch: 15 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 12 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 12 },
       ];
       ws["!cols"] = colWidths;
 
@@ -279,7 +276,6 @@ export default function FiltersAndActions({
   );
 }
 
-// Add the FilterArea component here
 function FilterArea({
   selectedStatuses,
   setSelectedStatuses,

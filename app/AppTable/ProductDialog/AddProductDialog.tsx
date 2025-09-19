@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -70,7 +69,7 @@ export default function AddProductDialog({
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSupplier, setSelectedSupplier] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Button loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const {
@@ -116,7 +115,7 @@ export default function AddProductDialog({
   };
 
   const onSubmit = async (data: ProductFormData) => {
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
     const status: Product["status"] = calculateStatus(data.quantity);
 
     try {
@@ -154,7 +153,7 @@ export default function AddProductDialog({
       } else {
         const productToUpdate: Product = {
           id: selectedProduct.id,
-          createdAt: new Date(selectedProduct.createdAt), // Convert string to Date
+          createdAt: new Date(selectedProduct.createdAt),
           supplierId: selectedSupplier,
           name: data.productName,
           price: data.price,
@@ -188,7 +187,7 @@ export default function AddProductDialog({
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 

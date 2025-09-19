@@ -4,7 +4,6 @@ export function useAppTheme() {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    // Logic to determine the theme
     const currentTheme = localStorage.getItem("theme") || "light";
     setTheme(currentTheme);
   }, []);

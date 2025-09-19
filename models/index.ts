@@ -1,12 +1,10 @@
 import mongoose from 'mongoose';
 
-// Import all models
 import User from './User';
 import Category from './Category';
 import Supplier from './Supplier';
 import Product from './Product';
 
-// Database connection
 const MONGODB_URI = process.env.DATABASE_URL || 'mongodb://localhost:27017/inventory';
 
 if (!MONGODB_URI) {
@@ -50,7 +48,6 @@ async function connectToDatabase() {
   return cached.conn;
 }
 
-// Export models and connection function
 export {
   connectToDatabase,
   User,
@@ -59,7 +56,6 @@ export {
   Product
 };
 
-// Export types
 export type { IUser } from './User';
 export type { ICategory } from './Category';
 export type { ISupplier } from './Supplier';

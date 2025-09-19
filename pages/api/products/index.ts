@@ -9,7 +9,6 @@ async function handler(
   res: NextApiResponse
 ) {
   try {
-    // Connect to database
     await connectToDatabase();
 
     const session = await getSessionServer(req, res);
@@ -25,18 +24,15 @@ async function handler(
         try {
           const { name, sku, price, quantity, status, categoryId, supplierId } = req.body;
 
-          // Validate required fields
           if (!name || !sku || !price || !quantity || !categoryId || !supplierId) {
             return res.status(400).json({ error: "All fields are required" });
           }
 
-          // Check if SKU already exists
           const existingProduct = await Product.findOne({ sku: sku.toUpperCase() });
           if (existingProduct) {
             return res.status(400).json({ error: "SKU must be unique" });
           }
 
-          // Create the product
           const product = new Product({
             name,
             sku,
@@ -49,12 +45,10 @@ async function handler(
 
           const savedProduct = await product.save();
 
-          // Populate category and supplier data
           const populatedProduct = await Product.findById(savedProduct._id)
             .populate('categoryId', 'name')
             .populate('supplierId', 'name');
 
-          // Return the created product data with category and supplier names
           res.status(201).json({
             id: savedProduct._id.toString(),
             name: savedProduct.name,
@@ -77,18 +71,15 @@ async function handler(
 
       case "GET":
         try {
-          // Fetch products with populated category and supplier data
           const products = await Product.find({ userId: new mongoose.Types.ObjectId(userId) })
             .populate('categoryId', 'name')
             .populate('supplierId', 'name')
             .sort({ createdAt: -1 });
 
-          // Debug log - only log in development
           if (process.env.NODE_ENV === 'development') {
             console.log("Raw products from database:", products.length);
           }
 
-          // Transform the data to match the expected format
           const transformedProducts = products.map((product) => ({
             id: product._id.toString(),
             name: product.name,
@@ -119,7 +110,6 @@ async function handler(
             return res.status(400).json({ error: "Product ID is required" });
           }
 
-          // Update the product
           const updatedProduct = await Product.findByIdAndUpdate(
             id,
             {
@@ -138,12 +128,10 @@ async function handler(
             return res.status(404).json({ error: "Product not found" });
           }
 
-          // Populate category and supplier data
           const populatedProduct = await Product.findById(updatedProduct._id)
             .populate('categoryId', 'name')
             .populate('supplierId', 'name');
 
-          // Return the updated product data with category and supplier names
           res.status(200).json({
             id: updatedProduct._id.toString(),
             name: updatedProduct.name,

@@ -13,15 +13,15 @@ import { cn } from "@/lib/utils";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const { login, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
       await login(email, password);
@@ -44,12 +44,27 @@ export default function Login() {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-4">
+      <Card className="w-full max-w-md bg-blue-50 border-blue-200">
+        <CardContent className="p-4">
+          <div className="text-center">
+            <h2 className="text-sm font-semibold text-blue-800 mb-2">
+              Demo Credentials
+            </h2>
+            <p className="text-xs text-blue-700">
+              <strong>Email:</strong> user@email.com
+              <br />
+              <strong>Password:</strong> user@123
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="overflow-hidden p-0 w-full max-w-4xl">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
@@ -94,8 +109,12 @@ export default function Login() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging In..." : "Login"}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || authLoading}
+            >
+              {isSubmitting || authLoading ? "Logging In..." : "Login"}
             </Button>
 
             <div className="text-center text-sm">

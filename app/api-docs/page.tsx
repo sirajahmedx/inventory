@@ -448,9 +448,7 @@ export default function ApiDocsPage() {
               ))}
             </div>
           </CardContent>
-        </Card>
-
-        {/* Error Codes */}
+        </Card> 
         <Card>
           <CardHeader>
             <CardTitle>Error Codes</CardTitle>

@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast"; // Import toast hook
-import { useState } from "react"; // Import useState for loading states
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface ProductsDropDownProps {
   row: {
@@ -26,15 +26,12 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
     loadProducts,
   } = useProductStore();
   const router = useRouter();
-  const { toast } = useToast(); // Use toast hook
-  const [isCopying, setIsCopying] = useState(false); // Loading state for copy
-  const [isDeleting, setIsDeleting] = useState(false); // Loading state for delete
+  const { toast } = useToast();
+  const [isCopying, setIsCopying] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Debug log removed to prevent payload errors
-
-  // Handle Copy Product
   const handleCopyProduct = async () => {
-    setIsCopying(true); // Start loading
+    setIsCopying(true);
 
     try {
       const uniqueSku = `${row.original.sku}-${Date.now()}`;
@@ -49,11 +46,8 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
         supplier: row.original.supplier || "Unknown",
       };
 
-      // Debug log removed to prevent payload errors
-
       const result = await addProduct(productToCopy);
       if (result.success) {
-        // Show success toast
         toast({
           title: "Product Copied Successfully!",
           description: `"${row.original.name}" has been copied with a new SKU.`,
@@ -62,7 +56,6 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
         await loadProducts();
         router.refresh();
       } else {
-        // Show error toast
         toast({
           title: "Copy Failed",
           description: "Failed to copy the product. Please try again.",
@@ -70,18 +63,16 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
         });
       }
     } catch (error) {
-      // Show error toast
       toast({
         title: "Copy Failed",
         description: "An unexpected error occurred while copying the product.",
         variant: "destructive",
       });
     } finally {
-      setIsCopying(false); // Stop loading
+      setIsCopying(false);
     }
   };
 
-  // Handle Edit Product
   const handleEditProduct = () => {
     try {
       setSelectedProduct(row.original);
@@ -91,14 +82,12 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
     }
   };
 
-  // Handle Delete Product
   const handleDeleteProduct = async () => {
-    setIsDeleting(true); // Start loading
+    setIsDeleting(true);
 
     try {
       const result = await deleteProduct(row.original.id);
       if (result.success) {
-        // Show success toast
         toast({
           title: "Product Deleted Successfully!",
           description: `"${row.original.name}" has been permanently deleted.`,
@@ -106,7 +95,6 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
 
         router.refresh();
       } else {
-        // Show error toast
         toast({
           title: "Delete Failed",
           description: "Failed to delete the product. Please try again.",
@@ -114,14 +102,13 @@ export default function ProductsDropDown({ row }: ProductsDropDownProps) {
         });
       }
     } catch (error) {
-      // Show error toast
       toast({
         title: "Delete Failed",
         description: "An unexpected error occurred while deleting the product.",
         variant: "destructive",
       });
     } finally {
-      setIsDeleting(false); // Stop loading
+      setIsDeleting(false);
     }
   };
 

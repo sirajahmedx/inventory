@@ -23,9 +23,9 @@ export default function AddSupplierDialog() {
   const [supplierName, setSupplierName] = useState("");
   const [editingSupplier, setEditingSupplier] = useState<string | null>(null);
   const [newSupplierName, setNewSupplierName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Button loading state
-  const [isEditing, setIsEditing] = useState(false); // Loading state for edit
-  const [isDeleting, setIsDeleting] = useState(false); // Loading state for delete
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     suppliers,
     addSupplier,
@@ -52,7 +52,7 @@ export default function AddSupplierDialog() {
       return;
     }
 
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
     try {
       const response = await axiosInstance.post("/api/suppliers", {
         name: supplierName,
@@ -78,7 +78,7 @@ export default function AddSupplierDialog() {
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 
@@ -92,7 +92,7 @@ export default function AddSupplierDialog() {
       return;
     }
 
-    setIsEditing(true); // Start loading
+    setIsEditing(true);
     try {
       const response = await axiosInstance.put("/api/suppliers", {
         id: supplierId,
@@ -119,14 +119,13 @@ export default function AddSupplierDialog() {
         variant: "destructive",
       });
     } finally {
-      setIsEditing(false); // Stop loading
+      setIsEditing(false);
     }
   };
 
   const handleDeleteSupplier = async (supplierId: string) => {
-    setIsDeleting(true); // Start loading
+    setIsDeleting(true);
 
-    // Find the supplier name before deleting for the toast message
     const supplierToDelete = suppliers.find((sup) => sup.id === supplierId);
     const supplierName = supplierToDelete?.name || "Unknown Supplier";
 
@@ -152,7 +151,7 @@ export default function AddSupplierDialog() {
         variant: "destructive",
       });
     } finally {
-      setIsDeleting(false); // Stop loading
+      setIsDeleting(false);
     }
   };
 
