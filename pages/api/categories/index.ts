@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase, Category } from "@/models";
 import { getSessionServer } from "@/utils/auth";
 import mongoose from "mongoose";
+import allowCors from "@/utils/cors";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -128,6 +129,8 @@ export default async function handler(
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export default allowCors(handler);
 
 export const config = {
   api: {

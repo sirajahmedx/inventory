@@ -3,8 +3,9 @@ import { connectToDatabase, User } from "@/models";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../../../utils/auth";
 import Cookies from "cookies";
+import allowCors from "@/utils/cors";
 
-export default async function login(req: NextApiRequest, res: NextApiResponse) {
+async function login(req: NextApiRequest, res: NextApiResponse) {
   const allowedOrigins = [
     "http://localhost:3000",
     req.headers.origin,
@@ -107,3 +108,5 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export default allowCors(login);

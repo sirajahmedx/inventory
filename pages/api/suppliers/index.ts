@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase, Supplier } from "@/models";
 import { getSessionServer } from "@/utils/auth";
 import mongoose from "mongoose";
+import allowCors from "@/utils/cors";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -148,4 +149,7 @@ export const config = {
     },
   },
   runtime: 'nodejs',
+
 };
+
+export default allowCors(handler);

@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase, Product, Category, Supplier } from "@/models";
 import { getSessionServer } from "@/utils/auth";
 import mongoose from "mongoose";
+import allowCors from "@/utils/cors";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -41,7 +42,6 @@ export default async function handler(
             sku,
             price: parseFloat(price),
             quantity: parseInt(quantity),
-            status: status || 'active',
             categoryId: new mongoose.Types.ObjectId(categoryId),
             supplierId: new mongoose.Types.ObjectId(supplierId),
             userId: new mongoose.Types.ObjectId(userId),
@@ -194,6 +194,7 @@ export default async function handler(
     res.status(500).json({ error: "Internal server error" });
   }
 }
+export default allowCors(handler);
 
 export const config = {
   api: {
